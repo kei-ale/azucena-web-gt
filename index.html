@@ -435,52 +435,56 @@ header::before{
   aspect-ratio:16 / 9;
   max-width:100%;
 }
-.media-frame video,
 .media-frame img,
 .media-frame iframe{
   width:100%; height:100%;
   object-fit:cover; border:none; display:block;
 }
-.media-fallback{
+.media-frame iframe{object-fit:fill}
+.media-pending{
   position:absolute; inset:0;
   display:flex; flex-direction:column;
   align-items:center; justify-content:center;
   gap:10px; padding:20px; text-align:center;
-  background:linear-gradient(135deg, var(--em-100), #d4f4e6);
-}
-.media-fallback.video{
   background:linear-gradient(135deg, #eaf1ff, #d6e4fb);
+  color:#2a4d99;
 }
-.media-fallback-icon{
+.media-pending-icon{
   width:56px;height:56px;border-radius:50%;
-  background:linear-gradient(135deg, var(--em-600), var(--em-400));
-  color:#fff; display:grid; place-items:center;
-  font-family:var(--f-display); font-weight:700; font-size:.95rem;
-  box-shadow:0 4px 12px rgba(14,122,95,0.3);
-}
-.media-fallback.video .media-fallback-icon{
   background:linear-gradient(135deg, #3b6dc9, #5a8ce0);
+  color:#fff; display:grid; place-items:center;
+  font-family:var(--f-display); font-weight:700; font-size:.8rem;
+  box-shadow:0 4px 12px rgba(59,109,201,0.3);
 }
-.media-fallback strong{
-  color:var(--em-700); font-family:var(--f-display);
-  font-size:1rem;
+.media-pending strong{font-family:var(--f-display); font-size:1rem}
+.media-pending span{
+  font-size:.78rem; color:#3c5a8a;
+  max-width:360px; line-height:1.45;
 }
-.media-fallback.video strong{color:#2a4d99}
-.media-fallback span{
-  color:var(--muted); font-size:.78rem;
-  max-width:320px; line-height:1.4;
+.media-pending code{
+  background:rgba(255,255,255,0.8); padding:2px 6px;
+  border-radius:4px; font-size:.72rem; color:#1f3a63;
 }
-.media-fallback code{
-  background:rgba(255,255,255,0.7); padding:2px 6px;
-  border-radius:4px; font-size:.72rem;
-  color:var(--em-800);
+.media-frame.infographic{
+  aspect-ratio:auto;
+  background:#fff;
+  border-style:solid;
+  border-width:1.5px;
 }
+.media-frame.infographic img{
+  height:auto; max-height:70vh;
+  object-fit:contain;
+}
+.capsule-infographic[hidden]{display:none}
 .media-caption{
   text-align:center; font-size:.8rem;
   color:var(--muted); font-style:italic;
   padding:8px 12px; background:#fff;
   border-top:1px solid var(--line);
   position:absolute; bottom:0; left:0; right:0;
+}
+.media-frame.infographic .media-caption{
+  position:static;
 }
 
 .media-label{
@@ -1417,12 +1421,12 @@ header::before{
 "use strict";
 
 /* ============================================================
-   CONFIGURACION DE MEDIA
-   Aqui puede agregar URLs de infografias y videos por capsula.
-   Ejemplo:
-     infographic: { url: 'https://ejemplo.com/mi-imagen.jpg', caption: 'Mi pie' }
-     video: { url: 'https://youtube.com/watch?v=ABC123', title: 'Como medirme' }
-   Deje la url vacia para mostrar el espacio reservado.
+   INFOGRAFIAS
+   Cada capsula busca su imagen en la misma carpeta que este HTML:
+   el archivo se llama igual que el titulo de la capsula + ".jpeg".
+   Ejemplo: la capsula 'Mis medicamentos' usa 'Mis medicamentos.jpeg'.
+   Si el archivo no existe, la seccion de infografia NO se muestra.
+   El campo caption es opcional (texto debajo de la imagen).
    ============================================================ */
 
 const CAPSULES = [
@@ -1430,13 +1434,7 @@ const CAPSULES = [
     id:'que-es', icon:'A', title:'Que es la diabetes tipo 2',
     summary:'Aprende como funciona la insulina y por que sube el azucar.',
     infographic:{
-      url:'', // <-- pega aqui tu URL de infografia
-      alt:'Infografia sobre la insulina',
       caption:'Como funciona la insulina en el cuerpo'
-    },
-    video:{
-      url:'', // <-- pega aqui tu URL de video (YouTube o embed)
-      title:'Video: Que es la diabetes tipo 2'
     },
     sections:[
       {h:'La llave y la puerta',
@@ -1463,8 +1461,7 @@ const CAPSULES = [
   {
     id:'metas', icon:'M', title:'Mis metas de control',
     summary:'Cuales son los numeros que debe cuidar y por que.',
-    infographic:{url:'', alt:'Tabla de metas', caption:'Metas de control para la mayoria de adultos'},
-    video:{url:'', title:'Video: Como leer su glucometro'},
+    infographic:{caption:'Metas de control para la mayoria de adultos'},
     sections:[
       {h:'Los numeros que importan',
        p:'Para la mayoria de adultos con diabetes, estas son las metas:',
@@ -1483,8 +1480,7 @@ const CAPSULES = [
   {
     id:'comida', icon:'P', title:'Alimentacion y el plato',
     summary:'El metodo del plato y como elegir sus bebidas.',
-    infographic:{url:'', alt:'Metodo del plato', caption:'El plato saludable: mitad verduras, un cuarto proteina, un cuarto carbohidratos'},
-    video:{url:'', title:'Video: Como armar un plato saludable'},
+    infographic:{caption:'El plato saludable: mitad verduras, un cuarto proteina, un cuarto carbohidratos'},
     sections:[
       {h:'El metodo del plato',
        p:'Use un plato mediano y dividalo asi:',
@@ -1502,8 +1498,17 @@ const CAPSULES = [
   {
     id:'medicamentos', icon:'Rx', title:'Mis medicamentos',
     summary:'Como se toman, para que sirven y que cuidar.',
-    infographic:{url:'', alt:'Horario de medicamentos', caption:'Ejemplo de horario de medicinas'},
-    video:{url:'', title:'Video: Como tomar metformina'},
+    infographic:{caption:'Ejemplo de horario de medicinas'},
+    /* ============================================================
+       >>> AGREGA AQUI LA URL DEL VIDEO DE "MIS MEDICAMENTOS" <<<
+       Pegue la direccion entre las comillas de url (abajo).
+       Sirve un enlace normal de YouTube o uno tipo embed.
+       Mientras url este vacia se muestra un recuadro de "Video pendiente".
+       ============================================================ */
+    video:{
+      url:'', // <-- PEGA AQUI LA URL DEL VIDEO
+      title:'Video: Como tomar metformina'
+    },
     sections:[
       {h:'Los mas comunes',
        list:[
@@ -1523,8 +1528,7 @@ const CAPSULES = [
   {
     id:'hipo', icon:'B', title:'Azucar baja (hipoglucemia)',
     summary:'Senales de alerta y la regla del 15.',
-    infographic:{url:'', alt:'Regla del 15', caption:'La regla del 15 para azucar baja'},
-    video:{url:'', title:'Video: Como tratar un bajon de azucar'},
+    infographic:{caption:'La regla del 15 para azucar baja'},
     sections:[
       {h:'Senales de azucar baja',
        p:'Cuando el azucar esta debajo de 70 mg/dL puede sentir:',
@@ -1550,8 +1554,7 @@ const CAPSULES = [
   {
     id:'pies', icon:'F', title:'Cuidado de los pies',
     summary:'Revise sus pies todos los dias para evitar problemas.',
-    infographic:{url:'', alt:'Revision de pies', caption:'Pasos para revisar sus pies en casa'},
-    video:{url:'', title:'Video: Como revisar sus pies'},
+    infographic:{caption:'Pasos para revisar sus pies en casa'},
     sections:[
       {h:'Todos los dias',
        p:'Revise sus pies con buena luz. Use un espejo o pida ayuda a un familiar.',
@@ -1572,8 +1575,7 @@ const CAPSULES = [
   {
     id:'ejercicio', icon:'E', title:'Ejercicio y movimiento',
     summary:'Moverse es una de las mejores medicinas.',
-    infographic:{url:'', alt:'Metas de ejercicio', caption:'150 minutos a la semana'},
-    video:{url:'', title:'Video: Ejercicio seguro con diabetes'},
+    infographic:{caption:'150 minutos a la semana'},
     sections:[
       {h:'Cuanto moverse',
        p:'La meta es 150 minutos a la semana. Por ejemplo, 30 minutos 5 dias.',
@@ -1591,8 +1593,7 @@ const CAPSULES = [
   {
     id:'organos', icon:'O', title:'Rinones, higado y presion',
     summary:'La diabetes afecta varios organos sin dar dolor.',
-    infographic:{url:'', alt:'Organos afectados', caption:'Como la diabetes afecta sus organos'},
-    video:{url:'', title:'Video: Proteja sus rinones'},
+    infographic:{caption:'Como la diabetes afecta sus organos'},
     sections:[
       {h:'Sus rinones',
        p:'La diabetes y la presion alta danan los rinones sin dar dolor. Se revisan con orina y sangre al menos 1 vez al ano.',
@@ -1611,8 +1612,7 @@ const CAPSULES = [
   {
     id:'enfermedad', icon:'D', title:'Dias de enfermedad',
     summary:'Que hacer cuando tiene gripe, vomitos o diarrea.',
-    infographic:{url:'', alt:'Reglas dias de enfermedad', caption:'Reglas para dias de enfermedad'},
-    video:{url:'', title:'Video: Manejo de la diabetes cuando se enferma'},
+    infographic:{caption:'Reglas para dias de enfermedad'},
     sections:[
       {h:'Reglas importantes',
        list:[
@@ -1629,8 +1629,7 @@ const CAPSULES = [
   {
     id:'emocional', icon:'V', title:'Vivir con diabetes',
     summary:'Cuidar su mente tambien es cuidar su diabetes.',
-    infographic:{url:'', alt:'Bienestar emocional', caption:'Cuidar las emociones es parte del tratamiento'},
-    video:{url:'', title:'Video: Vivir bien con diabetes'},
+    infographic:{caption:'Cuidar las emociones es parte del tratamiento'},
     sections:[
       {h:'Es normal sentirse cansado',
        p:'Tener diabetes es trabajo todos los dias. Sentirse frustrado, cansado o con miedo es comun y tiene nombre: distres por diabetes.'},
@@ -1949,8 +1948,6 @@ function renderLearn(){
 
 function capsuleCard(c){
   const visited = capsulesViewed.includes(c.id);
-  const hasMedia = (c.infographic && c.infographic.url) || (c.video && c.video.url);
-  const badgeMedia = hasMedia ? '<span class="capsule-badge media">Con media</span>' : '';
   const badgeDone = visited ? '<span class="capsule-badge done">Visto</span>' : '<span class="capsule-badge">Nuevo</span>';
 
   const card = document.createElement('button');
@@ -1964,7 +1961,7 @@ function capsuleCard(c){
         '<p class="capsule-summary">' + c.summary + '</p>' +
       '</div>' +
     '</div>' +
-    '<div class="capsule-meta">' + badgeDone + badgeMedia + '</div>';
+    '<div class="capsule-meta">' + badgeDone + '</div>';
   card.addEventListener('click', addRipple);
   card.addEventListener('click', ()=>{
     initAudio(); sndClick();
@@ -1995,16 +1992,23 @@ function renderCapsuleDetail(id){
     '<div><h2>' + c.title + '</h2><p>' + c.summary + '</p></div>' +
   '</div>';
 
-  // Infografia
-  if(c.infographic){
-    html += '<span class="media-label">Infografia</span>';
-    html += renderMedia('infographic', c.infographic);
+  // Infografia: solo se muestra si existe el .jpeg con el nombre de la capsula
+  const infoUrl = infographicUrl(c);
+  const infoCaption = c.infographic && c.infographic.caption;
+  if(infoUrl){
+    html += '<div class="capsule-infographic" id="capsuleInfographic" hidden>' +
+      '<span class="media-label">Infografia</span>' +
+      '<div class="media-frame infographic">' +
+        '<img id="capsuleInfographicImg" src="' + infoUrl + '" alt="' + c.title + '">' +
+        (infoCaption ? '<div class="media-caption">' + infoCaption + '</div>' : '') +
+      '</div>' +
+    '</div>';
   }
 
-  // Video
+  // Video (solo aparece en las capsulas que tengan el campo video)
   if(c.video){
     html += '<span class="media-label video">Video</span>';
-    html += renderMedia('video', c.video);
+    html += renderVideo(c.video);
   }
 
   // Contenido
@@ -2034,6 +2038,18 @@ function renderCapsuleDetail(id){
   learnView.innerHTML = html;
 
   // eventos
+  const infoBox = document.getElementById('capsuleInfographic');
+  if(infoBox){
+    const infoImg = document.getElementById('capsuleInfographicImg');
+    const showInfo = ()=>{ infoBox.hidden = false; };
+    const hideInfo = ()=>{ infoBox.remove(); };
+    if(infoImg.complete && infoImg.naturalWidth > 0){
+      showInfo();
+    } else {
+      infoImg.addEventListener('load', showInfo);
+      infoImg.addEventListener('error', hideInfo);
+    }
+  }
   document.getElementById('capsuleBack').addEventListener('click', ()=>{
     currentCapsuleId = null;
     renderLearn();
@@ -2055,32 +2071,28 @@ function renderCapsuleDetail(id){
   }
 }
 
-function renderMedia(kind, media){
-  const hasUrl = media.url && media.url.trim();
-  const isVideo = kind === 'video';
-  const fallbackLabel = isVideo ? 'VIDEO' : 'IMG';
-  const title = isVideo ? (media.title || 'Video educativo') : (media.caption || 'Infografia');
+function infographicUrl(c){
+  const name = (c && c.title ? c.title : '').trim();
+  if(!name) return '';
+  return encodeURIComponent(name + '.jpeg');
+}
+
+function renderVideo(media){
+  const title = (media && media.title) || 'Video educativo';
+  const hasUrl = media && media.url && media.url.trim();
 
   if(!hasUrl){
     return '<div class="media-frame">' +
-      '<div class="media-fallback' + (isVideo ? ' video' : '') + '">' +
-        '<div class="media-fallback-icon">' + fallbackLabel + '</div>' +
+      '<div class="media-pending">' +
+        '<div class="media-pending-icon">VIDEO</div>' +
         '<strong>' + title + '</strong>' +
-        '<span>Espacio reservado. Para agregar, abra el codigo y busque esta capsula en <code>CAPSULES</code>.</span>' +
+        '<span>Video pendiente. Para agregarlo, busque en el codigo la capsula <code>medicamentos</code> y pegue la URL en <code>video.url</code>.</span>' +
       '</div>' +
     '</div>';
   }
 
-  if(isVideo){
-    const embed = youtubeEmbed(media.url);
-    return '<div class="media-frame">' +
-      '<iframe src="' + embed + '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="' + (media.title||'Video') + '"></iframe>' +
-    '</div>';
-  }
-
   return '<div class="media-frame">' +
-    '<img src="' + media.url + '" alt="' + (media.alt||'Infografia') + '" loading="lazy">' +
-    (media.caption ? '<div class="media-caption">' + media.caption + '</div>' : '') +
+    '<iframe src="' + youtubeEmbed(media.url) + '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="' + title + '"></iframe>' +
   '</div>';
 }
 
