@@ -1,0 +1,2701 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Azucena - Aprende sobre tu diabetes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Baloo+2:wght@600;700&display=swap">
+<style>
+:root{
+  --em-900:#062b20; --em-800:#0a3d2e; --em-700:#0e5c46; --em-600:#0e7a5f;
+  --em-500:#14a37f; --em-400:#2ec29a; --em-300:#7fe0bd; --em-200:#c6f3e1;
+  --em-100:#e6faf2;
+  --gold:#f2c14e; --gold-dark:#c99a26;
+  --ink:#0a2a20; --muted:#4a6d61;
+  --alert:#c0392b; --alert-soft:#fdecea;
+  --ok:#1e8449; --ok-soft:#e8f8ee;
+  --line:rgba(14,122,95,0.22);
+  --shadow-sm:0 3px 10px rgba(6,43,32,0.12);
+  --shadow-md:0 8px 22px rgba(6,43,32,0.18);
+  --shadow-lg:0 14px 36px rgba(6,43,32,0.28);
+  --f-display:"Baloo 2","Trebuchet MS",system-ui,sans-serif;
+  --f-body:"Atkinson Hyperlegible",Verdana,system-ui,sans-serif;
+  --fs:17px;
+}
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none !important}
+html,body{margin:0;padding:0}
+body{
+  background:
+    radial-gradient(circle at 15% 10%, rgba(46,194,154,0.35) 0%, transparent 45%),
+    radial-gradient(circle at 85% 20%, rgba(14,122,95,0.4) 0%, transparent 40%),
+    radial-gradient(circle at 50% 90%, rgba(20,163,127,0.35) 0%, transparent 55%),
+    linear-gradient(160deg, #0a3d2e 0%, #0e5c46 50%, #0a3d2e 100%);
+  background-attachment:fixed;
+  font-family:var(--f-body); font-size:var(--fs); color:var(--ink);
+  line-height:1.5; min-height:100vh;
+  padding:20px 12px 60px;
+  position:relative;
+}
+body::before{
+  content:""; position:fixed; inset:0;
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px),
+    radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size:32px 32px, 64px 64px;
+  pointer-events:none; z-index:0;
+  animation:bgShift 60s linear infinite;
+}
+@keyframes bgShift{
+  from{background-position:0 0,16px 16px}
+  to{background-position:320px 320px,336px 336px}
+}
+img{max-width:100%}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.chev{display:inline-block;width:9px;height:9px;flex:none;border-left:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);margin-right:2px}
+
+/* ============ WIDGET ============ */
+.app{
+  position:relative; z-index:1; max-width:840px; margin:0 auto;
+  background:linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(230,250,242,0.97) 100%);
+  border-radius:24px;
+  box-shadow:var(--shadow-lg), 0 0 0 1px rgba(255,255,255,0.4) inset;
+  overflow:hidden;
+  display:flex; flex-direction:column;
+  animation:appIn .6s cubic-bezier(.34,1.56,.64,1) both;
+  backdrop-filter:blur(10px);
+}
+@keyframes appIn{
+  from{opacity:0;transform:translateY(20px) scale(.97)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+/* ============ HEADER ============ */
+header{
+  display:flex; align-items:center; gap:12px;
+  padding:16px 20px;
+  background:linear-gradient(135deg, var(--em-700) 0%, var(--em-500) 100%);
+  color:#fff; flex-wrap:wrap;
+  position:relative; overflow:hidden;
+}
+header::before{
+  content:""; position:absolute; top:-50%; right:-10%;
+  width:200px; height:200px; border-radius:50%;
+  background:radial-gradient(circle, rgba(242,193,78,0.25) 0%, transparent 70%);
+  animation:floatBlob 8s ease-in-out infinite; pointer-events:none;
+}
+@keyframes floatBlob{
+  0%,100%{transform:translate(0,0) scale(1)}
+  50%{transform:translate(-20px,20px) scale(1.1)}
+}
+.avatar{
+  width:52px;height:52px;border-radius:50%;
+  background:linear-gradient(135deg, var(--gold), var(--gold-dark));
+  color:var(--em-900);
+  display:grid;place-items:center;
+  font-family:var(--f-display);font-size:26px;font-weight:700;
+  flex:none;
+  box-shadow:0 4px 14px rgba(0,0,0,0.3), 0 0 0 3px rgba(255,255,255,0.7);
+  animation:pulse 3s ease-in-out infinite;
+  position:relative; z-index:1;
+}
+@keyframes pulse{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.06)}
+}
+.who{flex:1;min-width:150px;position:relative;z-index:1}
+.who h1{
+  font-family:var(--f-display);font-size:1.4rem;line-height:1.1;
+  margin:0;font-weight:700;
+  text-shadow:0 2px 4px rgba(0,0,0,0.15);
+}
+.who p{margin:2px 0 0;font-size:.82rem;opacity:.92}
+.tools{display:flex;gap:6px;flex-wrap:wrap;position:relative;z-index:1}
+.tbtn{
+  font:inherit;font-size:.78rem;font-weight:600;
+  border:1.5px solid rgba(255,255,255,0.4);
+  background:rgba(255,255,255,0.14); color:#fff;
+  border-radius:10px; padding:6px 10px;
+  cursor:pointer; min-height:36px;
+  transition:transform .15s ease, background .2s ease;
+  position:relative; overflow:hidden;
+}
+.tbtn:hover{background:rgba(255,255,255,0.28);transform:translateY(-2px)}
+.tbtn:active{transform:scale(.94)}
+.tbtn[aria-pressed="true"]{background:var(--gold);color:var(--em-900);border-color:var(--gold)}
+.sos{background:rgba(192,57,43,0.85);border-color:rgba(255,255,255,0.5)}
+.sos:hover{background:#c0392b}
+.tbtn:focus-visible,.nav-tab:focus-visible,.opt:focus-visible,.capsule-card:focus-visible,
+.game-card:focus-visible,.game-opt:focus-visible,.game-next:focus-visible,.media-btn:focus-visible{
+  outline:3px solid var(--gold);outline-offset:2px;
+}
+.ripple{
+  position:absolute; border-radius:50%;
+  background:rgba(255,255,255,0.6);
+  transform:scale(0); animation:rippleAnim .6s linear;
+  pointer-events:none;
+}
+@keyframes rippleAnim{to{transform:scale(4);opacity:0}}
+
+/* ============ NAV TABS ============ */
+.main-nav{
+  display:flex; gap:2px;
+  background:#fff;
+  border-bottom:2px solid var(--line);
+  position:sticky; top:0; z-index:20;
+  overflow-x:auto;
+  scrollbar-width:none;
+}
+.main-nav::-webkit-scrollbar{display:none}
+.nav-tab{
+  flex:1;
+  min-width:78px;
+  padding:14px 10px;
+  background:transparent;
+  border:none;
+  border-bottom:3px solid transparent;
+  color:var(--muted);
+  font-weight:700;
+  cursor:pointer;
+  transition:all .2s;
+  font-family:var(--f-display);
+  font-size:.9rem;
+  display:flex; align-items:center; justify-content:center; gap:6px;
+  position:relative;
+}
+.nav-tab .ico{
+  width:22px;height:22px;border-radius:50%;
+  background:var(--em-100);
+  color:var(--em-700);
+  display:grid;place-items:center;
+  font-size:.72rem;font-weight:700;
+  transition:background .2s, color .2s;
+}
+.nav-tab:hover:not(.active) .ico{background:var(--em-200)}
+.nav-tab.active{
+  color:var(--em-700);
+  border-bottom-color:var(--em-500);
+}
+.nav-tab.active .ico{
+  background:linear-gradient(135deg, var(--em-600), var(--em-400));
+  color:#fff;
+}
+
+/* ============ TAB PANELS ============ */
+.tab-panel{display:none; padding:20px; animation:fadeIn .35s ease both}
+.tab-panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ============ HOME TAB ============ */
+.hero{
+  background:linear-gradient(135deg, var(--em-700), var(--em-500));
+  color:#fff; border-radius:18px;
+  padding:28px 24px;
+  margin-bottom:20px;
+  position:relative; overflow:hidden;
+  box-shadow:0 10px 28px rgba(14,122,95,0.35);
+}
+.hero::before{
+  content:""; position:absolute; top:-40%; right:-20%;
+  width:220px;height:220px;border-radius:50%;
+  background:radial-gradient(circle, rgba(242,193,78,0.3) 0%, transparent 70%);
+}
+.hero h2{
+  font-family:var(--f-display); margin:0 0 8px;
+  font-size:1.7rem; font-weight:700;
+  position:relative;
+}
+.hero p{margin:0; opacity:.92; font-size:.95rem; position:relative; max-width:520px}
+.hero .hero-stats{
+  display:flex; gap:14px; margin-top:18px; flex-wrap:wrap;
+  position:relative;
+}
+.hero-stat{
+  background:rgba(255,255,255,0.18);
+  border:1.5px solid rgba(255,255,255,0.3);
+  padding:10px 16px; border-radius:12px;
+  display:flex; flex-direction:column;
+  min-width:100px;
+  backdrop-filter:blur(4px);
+}
+.hero-stat .n{
+  font-family:var(--f-display); font-size:1.4rem; font-weight:700;
+  color:var(--gold); line-height:1;
+}
+.hero-stat .l{font-size:.72rem; opacity:.85; text-transform:uppercase; letter-spacing:.5px; margin-top:2px}
+
+.section-title{
+  display:flex; align-items:center; gap:10px;
+  font-family:var(--f-display);
+  font-size:1.15rem; font-weight:700;
+  color:var(--em-700);
+  margin:24px 0 14px;
+}
+.section-title::before{
+  content:""; width:4px; height:20px;
+  background:linear-gradient(180deg, var(--gold), var(--em-500));
+  border-radius:2px;
+}
+.section-title .sub{
+  margin-left:auto; font-family:var(--f-body);
+  font-size:.78rem; font-weight:400;
+  color:var(--muted);
+}
+
+.quick-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:12px;
+}
+.quick-card{
+  background:#fff;
+  border:2px solid var(--line);
+  border-radius:14px;
+  padding:16px;
+  cursor:pointer;
+  transition:all .25s;
+  text-align:left;
+  display:flex; gap:12px; align-items:center;
+  font:inherit; color:inherit;
+  position:relative; overflow:hidden;
+}
+.quick-card:hover{
+  transform:translateY(-3px);
+  border-color:var(--em-500);
+  box-shadow:var(--shadow-md);
+}
+.quick-card:active{transform:translateY(-1px) scale(.99)}
+.quick-icon{
+  width:44px;height:44px;flex:none;
+  border-radius:12px;
+  background:linear-gradient(135deg, var(--em-600), var(--em-400));
+  color:#fff; display:grid; place-items:center;
+  font-family:var(--f-display); font-weight:700; font-size:1.15rem;
+  box-shadow:0 3px 10px rgba(14,122,95,0.3);
+}
+.quick-card.gold .quick-icon{background:linear-gradient(135deg, var(--gold), var(--gold-dark)); color:var(--em-900)}
+.quick-card.alert .quick-icon{background:linear-gradient(135deg, #c0392b, #e74c3c)}
+.quick-info{flex:1; min-width:0}
+.quick-title{
+  display:block; font-family:var(--f-display); font-weight:700;
+  color:var(--em-700); font-size:1rem; line-height:1.2;
+}
+.quick-desc{display:block; font-size:.8rem; color:var(--muted); margin-top:2px; line-height:1.35}
+
+/* ============ LEARN TAB ============ */
+.learn-intro{
+  text-align:center; margin-bottom:20px;
+}
+.learn-intro h2{
+  font-family:var(--f-display); color:var(--em-700);
+  font-size:1.5rem; margin:0 0 6px; font-weight:700;
+}
+.learn-intro p{margin:0; color:var(--muted); font-size:.92rem}
+
+.progress-track{
+  background:#fff; border-radius:12px;
+  padding:14px 18px; margin-bottom:20px;
+  border:1.5px solid var(--line);
+  display:flex; align-items:center; gap:14px;
+}
+.progress-label{
+  font-size:.85rem; font-weight:600; color:var(--em-700);
+  min-width:120px;
+}
+.progress-track .bar{
+  flex:1; height:10px;
+  background:var(--em-100); border-radius:99px; overflow:hidden;
+}
+.progress-track .fill{
+  height:100%;
+  background:linear-gradient(90deg, var(--em-500), var(--gold));
+  transition:width .6s cubic-bezier(.4,0,.2,1);
+  border-radius:99px;
+}
+.progress-track .num{
+  font-family:var(--f-display); font-weight:700; font-size:1rem;
+  color:var(--em-700);
+}
+
+.capsules-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+  gap:14px;
+}
+.capsule-card{
+  background:#fff;
+  border:2px solid var(--line);
+  border-radius:16px;
+  padding:18px;
+  cursor:pointer;
+  transition:all .25s;
+  display:flex; flex-direction:column; gap:12px;
+  text-align:left; font:inherit; color:inherit;
+  position:relative; overflow:hidden;
+  animation:optIn .4s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes optIn{
+  from{opacity:0;transform:translateY(10px) scale(.95)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+.capsule-card::after{
+  content:""; position:absolute; top:0; left:-100%;
+  width:100%; height:100%;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+  transition:left .6s;
+  pointer-events:none;
+}
+.capsule-card:hover::after{left:100%}
+.capsule-card:hover{
+  transform:translateY(-4px);
+  border-color:var(--em-500);
+  box-shadow:0 12px 28px rgba(14,122,95,0.22);
+}
+.capsule-card:active{transform:translateY(-1px) scale(.99)}
+.capsule-card.visited{
+  border-color:var(--em-400);
+  background:linear-gradient(135deg, #fff, #e8faf2);
+}
+.capsule-head{display:flex; gap:12px; align-items:flex-start}
+.capsule-icon{
+  width:48px;height:48px;flex:none;
+  border-radius:14px;
+  background:linear-gradient(135deg, var(--em-600), var(--em-400));
+  color:#fff; display:grid; place-items:center;
+  font-family:var(--f-display); font-weight:700; font-size:1.3rem;
+  box-shadow:0 4px 12px rgba(14,122,95,0.3), 0 0 0 2px rgba(255,255,255,0.6) inset;
+}
+.capsule-card.visited .capsule-icon{
+  background:linear-gradient(135deg, var(--gold), var(--gold-dark));
+  color:var(--em-900);
+}
+.capsule-title{
+  font-family:var(--f-display); font-weight:700;
+  color:var(--em-700); font-size:1.05rem; line-height:1.25;
+  margin:0;
+}
+.capsule-summary{
+  color:var(--muted); font-size:.85rem; line-height:1.4;
+  margin:0;
+}
+.capsule-meta{
+  display:flex; gap:8px; align-items:center; flex-wrap:wrap;
+  margin-top:auto; padding-top:8px;
+  border-top:1px dashed var(--line);
+  font-size:.72rem; color:var(--muted);
+}
+.capsule-badge{
+  display:inline-flex; align-items:center; gap:4px;
+  background:var(--em-100); color:var(--em-700);
+  padding:3px 8px; border-radius:99px; font-weight:600;
+}
+.capsule-badge.done{background:var(--ok-soft); color:var(--ok)}
+.capsule-badge.media{background:var(--gold-soft); color:var(--gold-dark)}
+:root{--gold-soft:#fdf5db}
+
+/* ============ CAPSULE DETAIL ============ */
+.capsule-detail{
+  animation:fadeIn .4s ease both;
+}
+.back-btn{
+  display:inline-flex; align-items:center; gap:6px;
+  background:#fff; border:1.5px solid var(--line);
+  color:var(--em-700); border-radius:10px;
+  padding:8px 14px; font:inherit; font-size:.85rem;
+  font-weight:600; cursor:pointer; margin-bottom:18px;
+  transition:all .2s;
+}
+.back-btn:hover{background:var(--em-100);border-color:var(--em-500)}
+
+.capsule-hd{
+  background:linear-gradient(135deg, var(--em-700), var(--em-500));
+  color:#fff; border-radius:16px;
+  padding:22px;
+  margin-bottom:18px;
+  display:flex; gap:16px; align-items:center;
+  box-shadow:0 8px 22px rgba(14,122,95,0.3);
+}
+.capsule-hd .capsule-icon{width:60px;height:60px;font-size:1.6rem}
+.capsule-hd h2{
+  font-family:var(--f-display); margin:0 0 4px;
+  font-size:1.35rem; font-weight:700;
+}
+.capsule-hd p{margin:0; opacity:.9; font-size:.88rem}
+
+/* Media slot */
+.media-frame{
+  background:#f8fdfb;
+  border:2px dashed var(--line);
+  border-radius:14px;
+  overflow:hidden;
+  margin:18px 0;
+  position:relative;
+  aspect-ratio:16 / 9;
+  max-width:100%;
+}
+.media-frame video,
+.media-frame img,
+.media-frame iframe{
+  width:100%; height:100%;
+  object-fit:cover; border:none; display:block;
+}
+.media-fallback{
+  position:absolute; inset:0;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  gap:10px; padding:20px; text-align:center;
+  background:linear-gradient(135deg, var(--em-100), #d4f4e6);
+}
+.media-fallback.video{
+  background:linear-gradient(135deg, #eaf1ff, #d6e4fb);
+}
+.media-fallback-icon{
+  width:56px;height:56px;border-radius:50%;
+  background:linear-gradient(135deg, var(--em-600), var(--em-400));
+  color:#fff; display:grid; place-items:center;
+  font-family:var(--f-display); font-weight:700; font-size:.95rem;
+  box-shadow:0 4px 12px rgba(14,122,95,0.3);
+}
+.media-fallback.video .media-fallback-icon{
+  background:linear-gradient(135deg, #3b6dc9, #5a8ce0);
+}
+.media-fallback strong{
+  color:var(--em-700); font-family:var(--f-display);
+  font-size:1rem;
+}
+.media-fallback.video strong{color:#2a4d99}
+.media-fallback span{
+  color:var(--muted); font-size:.78rem;
+  max-width:320px; line-height:1.4;
+}
+.media-fallback code{
+  background:rgba(255,255,255,0.7); padding:2px 6px;
+  border-radius:4px; font-size:.72rem;
+  color:var(--em-800);
+}
+.media-caption{
+  text-align:center; font-size:.8rem;
+  color:var(--muted); font-style:italic;
+  padding:8px 12px; background:#fff;
+  border-top:1px solid var(--line);
+  position:absolute; bottom:0; left:0; right:0;
+}
+
+.media-label{
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:.72rem; font-weight:700;
+  text-transform:uppercase; letter-spacing:.5px;
+  color:var(--em-700);
+  background:var(--em-100);
+  padding:4px 10px; border-radius:99px;
+  margin-bottom:8px;
+}
+.media-label.video{
+  color:#2a4d99; background:#eaf1ff;
+}
+
+/* Capsule content */
+.capsule-body{
+  background:#fff; border-radius:14px;
+  padding:20px 22px; margin:18px 0;
+  border:1.5px solid var(--line);
+  box-shadow:var(--shadow-sm);
+}
+.capsule-body h3{
+  font-family:var(--f-display);
+  color:var(--em-700); margin:0 0 8px;
+  font-size:1.1rem; font-weight:700;
+}
+.capsule-body h3:not(:first-child){margin-top:20px}
+.capsule-body p{
+  margin:0 0 10px; color:var(--ink);
+  font-size:.95rem; line-height:1.6;
+}
+.capsule-body p:last-child{margin-bottom:0}
+.capsule-body ul{
+  margin:8px 0 12px; padding-left:22px;
+  font-size:.95rem; line-height:1.6;
+}
+.capsule-body li{margin-bottom:4px}
+.capsule-body b{color:var(--em-700)}
+.capsule-tip{
+  background:linear-gradient(135deg, var(--em-100), #d4f4e6);
+  border-left:4px solid var(--em-500);
+  padding:12px 16px; border-radius:8px;
+  margin:12px 0; font-size:.92rem;
+}
+.capsule-warn{
+  background:var(--alert-soft);
+  border-left:4px solid var(--alert);
+  padding:12px 16px; border-radius:8px;
+  margin:12px 0; font-size:.92rem;
+}
+
+/* Capsule footer actions */
+.capsule-actions{
+  display:flex; gap:10px; flex-wrap:wrap;
+  margin-top:22px; padding-top:18px;
+  border-top:1.5px dashed var(--line);
+}
+.btn-primary{
+  flex:1; min-width:180px;
+  padding:14px 20px;
+  background:linear-gradient(135deg, var(--em-600), var(--em-400));
+  color:#fff; border:none; border-radius:12px;
+  font-family:var(--f-display); font-weight:700; font-size:1rem;
+  cursor:pointer; box-shadow:0 6px 18px rgba(14,122,95,0.35);
+  transition:transform .2s, filter .2s;
+  position:relative; overflow:hidden;
+}
+.btn-primary:hover{transform:translateY(-2px);filter:brightness(1.08)}
+.btn-primary:active{transform:scale(.97)}
+.btn-secondary{
+  flex:1; min-width:180px;
+  padding:14px 20px;
+  background:#fff; color:var(--em-700);
+  border:2px solid var(--em-400); border-radius:12px;
+  font-family:var(--f-display); font-weight:700; font-size:1rem;
+  cursor:pointer; transition:all .2s;
+  position:relative; overflow:hidden;
+}
+.btn-secondary:hover{background:var(--em-100);transform:translateY(-2px)}
+.btn-secondary:active{transform:scale(.97)}
+
+/* ============ GAMES TAB ============ */
+.games-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:14px;
+}
+.game-card{
+  background:#fff; border:2px solid var(--line);
+  border-radius:16px; padding:18px;
+  cursor:pointer; transition:all .25s;
+  text-align:left; font:inherit; color:inherit;
+  display:flex; flex-direction:column; gap:12px;
+  position:relative; overflow:hidden;
+  animation:optIn .4s cubic-bezier(.34,1.56,.64,1) both;
+}
+.game-card::after{
+  content:""; position:absolute; top:0; left:-100%;
+  width:100%; height:100%;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+  transition:left .6s; pointer-events:none;
+}
+.game-card:hover::after{left:100%}
+.game-card:hover{
+  transform:translateY(-4px); border-color:var(--gold);
+  box-shadow:0 12px 28px rgba(14,122,95,0.22);
+}
+.game-card:active{transform:translateY(-1px) scale(.99)}
+.game-head{display:flex; gap:12px; align-items:flex-start}
+.game-icon{
+  width:52px;height:52px;flex:none;
+  border-radius:14px;
+  background:linear-gradient(135deg, var(--gold), var(--gold-dark));
+  color:var(--em-900); display:grid; place-items:center;
+  font-family:var(--f-display); font-weight:700; font-size:1.4rem;
+  box-shadow:0 4px 12px rgba(242,193,78,0.4), 0 0 0 2px rgba(255,255,255,0.6) inset;
+}
+.game-title{
+  font-family:var(--f-display); font-weight:700;
+  color:var(--em-700); font-size:1.05rem; line-height:1.25;
+  margin:0;
+}
+.game-desc{color:var(--muted); font-size:.85rem; line-height:1.4; margin:0}
+.game-meta{
+  display:flex; gap:6px; flex-wrap:wrap;
+  padding-top:10px; border-top:1px dashed var(--line);
+  font-size:.72rem;
+}
+.game-tag{
+  background:var(--em-100); color:var(--em-700);
+  padding:3px 8px; border-radius:99px; font-weight:600;
+}
+.game-tag.gold{background:var(--gold-soft); color:var(--gold-dark)}
+.game-tag.best{background:var(--ok-soft); color:var(--ok)}
+
+/* Game instructions screen */
+.game-instr{
+  animation:fadeIn .4s ease both;
+}
+.instr-hero{
+  background:linear-gradient(135deg, var(--gold), var(--gold-dark));
+  color:var(--em-900);
+  border-radius:16px;
+  padding:24px;
+  display:flex; gap:16px; align-items:center;
+  margin-bottom:18px;
+  box-shadow:0 8px 22px rgba(242,193,78,0.4);
+}
+.instr-hero .game-icon{
+  width:64px;height:64px;font-size:1.7rem;
+  background:linear-gradient(135deg, var(--em-700), var(--em-500));
+  color:#fff;
+  box-shadow:0 4px 12px rgba(14,122,95,0.4), 0 0 0 3px rgba(255,255,255,0.6) inset;
+}
+.instr-hero h2{
+  font-family:var(--f-display); margin:0 0 4px;
+  font-size:1.4rem; font-weight:700;
+}
+.instr-hero p{margin:0; font-size:.88rem; opacity:.85}
+
+.instr-block{
+  background:#fff; border-radius:14px;
+  padding:20px 22px; margin-bottom:14px;
+  border:1.5px solid var(--line);
+  box-shadow:var(--shadow-sm);
+}
+.instr-block h3{
+  font-family:var(--f-display); color:var(--em-700);
+  margin:0 0 12px; font-size:1.1rem;
+  display:flex; align-items:center; gap:8px;
+}
+.instr-block h3::before{
+  content:""; width:4px; height:16px;
+  background:linear-gradient(180deg, var(--gold), var(--em-500));
+  border-radius:2px;
+}
+.instr-block ol, .instr-block ul{
+  margin:0; padding-left:22px;
+  font-size:.92rem; line-height:1.6;
+}
+.instr-block li{margin-bottom:8px}
+.instr-block li:last-child{margin-bottom:0}
+.instr-block b{color:var(--em-700)}
+.instr-features{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+  gap:10px; margin-top:8px;
+}
+.instr-feature{
+  background:var(--em-100); border-radius:10px;
+  padding:10px 12px;
+  font-size:.82rem; color:var(--em-700); font-weight:600;
+  display:flex; align-items:center; gap:8px;
+}
+.instr-feature .dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--em-500); flex:none;
+}
+.instr-feature.gold{background:var(--gold-soft); color:var(--gold-dark)}
+.instr-feature.gold .dot{background:var(--gold)}
+
+/* ============ CHAT TAB ============ */
+#chat-tab{
+  display:flex; flex-direction:column;
+  padding:0;
+  min-height:500px;
+}
+#chat-messages{
+  flex:1; padding:20px;
+  display:flex; flex-direction:column; gap:12px;
+  min-height:340px;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(46,194,154,0.08) 0%, transparent 40%),
+    radial-gradient(circle at 80% 80%, rgba(20,163,127,0.06) 0%, transparent 40%),
+    linear-gradient(180deg, #f8fdfb 0%, #eafaf3 100%);
+  border-radius:0;
+}
+.msg{
+  max-width:88%; padding:12px 16px; border-radius:18px;
+  min-width:0; overflow-wrap:anywhere;
+  animation:bubbleIn .45s cubic-bezier(.34,1.56,.64,1) both;
+  position:relative;
+}
+@keyframes bubbleIn{
+  from{opacity:0;transform:translateY(20px) scale(.9)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+.bot{
+  background:#fff; border:1.5px solid var(--line);
+  border-top-left-radius:6px; align-self:flex-start;
+  box-shadow:var(--shadow-sm);
+}
+.me{
+  background:linear-gradient(135deg, var(--em-600), var(--em-500));
+  color:#fff; border-top-right-radius:6px; align-self:flex-end;
+  box-shadow:0 4px 12px rgba(14,122,95,0.3);
+  animation-name:bubbleInRight;
+}
+@keyframes bubbleInRight{
+  from{opacity:0;transform:translateX(20px) scale(.9)}
+  to{opacity:1;transform:translateX(0) scale(1)}
+}
+.msg p{margin:0 0 .5em}
+.msg p:last-child{margin:0}
+.msg ul{margin:.3em 0 .5em;padding-left:1.2em}
+.msg li{margin:.2em 0}
+.msg b{font-weight:700}
+.tip{
+  background:linear-gradient(135deg, var(--em-100), #d5f4e6);
+  border-radius:10px; padding:10px 12px 10px 14px; margin-top:.5em;
+  border-left:4px solid var(--em-500);
+}
+.warn{
+  background:var(--alert-soft); color:var(--ink);
+  border-left:5px solid var(--alert); border-radius:8px;
+  padding:10px 12px; margin-top:.5em;
+}
+.speak{
+  font:inherit; font-size:.78rem; color:var(--muted);
+  background:none; border:none; cursor:pointer;
+  padding:4px 0; text-decoration:underline;
+  transition:color .2s;
+}
+.speak:hover{color:var(--em-600)}
+.typing{
+  color:var(--muted); font-style:italic; font-size:.9rem;
+  display:inline-flex; align-items:center; gap:6px;
+}
+.typing::after{
+  content:""; display:inline-block; width:22px; height:8px;
+  background:
+    radial-gradient(circle,var(--em-500) 40%,transparent 45%) 0 50%/8px 8px no-repeat,
+    radial-gradient(circle,var(--em-500) 40%,transparent 45%) 50% 50%/8px 8px no-repeat,
+    radial-gradient(circle,var(--em-500) 40%,transparent 45%) 100% 50%/8px 8px no-repeat;
+  animation:dots 1s ease-in-out infinite;
+}
+@keyframes dots{
+  0%,80%,100%{opacity:.3;transform:scale(.8)}
+  40%{opacity:1;transform:scale(1)}
+}
+#chat-options{
+  display:flex; flex-wrap:wrap; gap:8px;
+  padding:0 20px 12px;
+}
+.opt{
+  font:inherit;font-size:.88rem;font-weight:600;
+  background:#fff;color:var(--em-700);
+  border:2px solid var(--em-400);border-radius:14px;
+  padding:10px 14px;cursor:pointer;min-height:44px;text-align:left;
+  display:inline-flex;align-items:center;gap:8px;
+  transition:transform .15s ease, background .2s, border-color .2s, box-shadow .2s;
+  position:relative; overflow:hidden;
+}
+.opt:hover{
+  background:var(--em-100); border-color:var(--em-600);
+  transform:translateY(-2px);
+  box-shadow:0 6px 16px rgba(14,122,95,0.22);
+}
+.opt:active{transform:scale(.96)}
+.opt.home{border-color:var(--line);color:var(--muted)}
+#chat-form{
+  display:flex; gap:8px;
+  padding:12px 20px 20px;
+  border-top:1.5px solid var(--line);
+  background:#fff;
+}
+#txt{
+  flex:1;min-width:0;font:inherit;font-size:1rem;
+  padding:11px 14px;border-radius:14px;
+  border:2px solid var(--line);background:#fff;color:var(--ink);
+  min-height:46px;transition:border-color .2s, box-shadow .2s;
+}
+#txt:focus{
+  border-color:var(--em-500);
+  box-shadow:0 0 0 4px rgba(20,163,127,0.15);
+  outline:none;
+}
+#send{
+  font:inherit;font-weight:700;
+  background:linear-gradient(135deg, var(--em-600), var(--em-500));
+  color:#fff;border:none;border-radius:14px;
+  padding:0 20px;min-height:46px;cursor:pointer;
+  transition:transform .15s, filter .2s;
+  box-shadow:0 4px 12px rgba(14,122,95,0.3);
+}
+#send:hover{filter:brightness(1.1);transform:translateY(-1px)}
+#send:active{transform:scale(.95)}
+.chat-legal{
+  font-size:.72rem; color:var(--muted);
+  margin:0; padding:8px 20px 16px;
+  background:#fff; text-align:center;
+  border-top:1px solid var(--line);
+}
+
+/* ============ GAME OVERLAY ============ */
+#gameOverlay{
+  position:fixed; inset:0; z-index:500;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(46,194,154,0.35) 0%, transparent 45%),
+    radial-gradient(circle at 85% 20%, rgba(14,122,95,0.4) 0%, transparent 40%),
+    linear-gradient(160deg, #0a3d2e 0%, #0e5c46 50%, #0a3d2e 100%);
+  display:flex; flex-direction:column;
+  animation:gameIn .35s ease both;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+}
+@keyframes gameIn{
+  from{opacity:0;transform:scale(.96)}
+  to{opacity:1;transform:scale(1)}
+}
+#gameOverlay.closing{animation:gameOut .25s ease both}
+@keyframes gameOut{
+  from{opacity:1;transform:scale(1)}
+  to{opacity:0;transform:scale(.96)}
+}
+.game-shell{
+  max-width:760px; width:100%; margin:0 auto;
+  padding:0 16px 40px;
+  display:flex; flex-direction:column;
+  min-height:100vh;
+}
+.game-hd{
+  display:flex; align-items:center; gap:12px;
+  padding:16px 0 14px;
+  border-bottom:2px solid rgba(255,255,255,0.2);
+  position:sticky; top:0;
+  background:linear-gradient(180deg, #0a3d2e 0%, rgba(10,61,46,0.95) 100%);
+  z-index:10; backdrop-filter:blur(8px);
+}
+.game-hd-back{
+  width:44px;height:44px;border-radius:50%;
+  background:rgba(255,255,255,0.15);
+  border:1.5px solid rgba(255,255,255,0.3);
+  color:#fff; font-size:1.3rem; font-weight:700; cursor:pointer;
+  display:grid; place-items:center; flex:none;
+  transition:transform .15s, background .2s;
+}
+.game-hd-back:hover{background:rgba(255,255,255,0.3);transform:scale(1.08)}
+.game-hd-back:active{transform:scale(.92)}
+.game-hd-title{
+  flex:1; font-family:var(--f-display); font-weight:700;
+  font-size:1.15rem; color:#fff; line-height:1.2; min-width:0;
+}
+.game-hd-title small{
+  display:block; font-family:var(--f-body); font-weight:400;
+  font-size:.78rem; color:rgba(255,255,255,0.75); margin-top:2px;
+}
+.game-hd-stars{
+  display:inline-flex; align-items:center; gap:6px;
+  background:linear-gradient(135deg, var(--gold), var(--gold-dark));
+  color:var(--em-900);
+  padding:8px 14px; border-radius:99px;
+  font-weight:700; font-size:.9rem;
+  box-shadow:0 4px 12px rgba(242,193,78,0.4);
+  border:2px solid rgba(255,255,255,0.5);
+}
+.star-mini{
+  width:16px;height:16px;
+  clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
+  background:var(--em-900); display:inline-block;
+}
+.game-body{flex:1; padding:24px 0; display:flex; flex-direction:column}
+
+/* Explicacion antes de la primera pregunta */
+.game-intro{
+  background:linear-gradient(135deg, rgba(255,255,255,0.99), rgba(230,250,242,0.97));
+  border-radius:18px; padding:24px;
+  box-shadow:0 12px 32px rgba(0,0,0,0.3);
+  animation:fadeIn .4s ease both;
+}
+.game-intro-hero{display:flex; gap:14px; align-items:center; margin-bottom:6px}
+.game-intro-hero .game-icon{width:58px;height:58px;font-size:1.5rem}
+.game-intro-hero h2{
+  font-family:var(--f-display); color:var(--em-700);
+  font-size:1.35rem; margin:0 0 4px; line-height:1.2;
+}
+.game-intro-hero p{margin:0; color:var(--muted); font-size:.9rem; line-height:1.4}
+.game-intro h3{
+  font-family:var(--f-display); color:var(--em-700);
+  font-size:1rem; margin:20px 0 10px;
+  display:flex; align-items:center; gap:8px;
+}
+.game-intro h3::before{
+  content:""; width:4px; height:15px; flex:none;
+  background:linear-gradient(180deg, var(--gold), var(--em-500));
+  border-radius:2px;
+}
+.game-intro-learn{
+  margin:0; font-size:.95rem; line-height:1.5; color:var(--ink);
+}
+.game-intro-steps{list-style:none; counter-reset:paso; margin:0; padding:0}
+.game-intro-steps li{
+  counter-increment:paso; position:relative;
+  padding-left:38px; margin-bottom:10px;
+  font-size:.95rem; line-height:1.45; color:var(--ink);
+}
+.game-intro-steps li:last-child{margin-bottom:0}
+.game-intro-steps li::before{
+  content:counter(paso);
+  position:absolute; left:0; top:-1px;
+  width:26px;height:26px;border-radius:50%;
+  display:grid;place-items:center;
+  background:var(--em-100); border:2px solid var(--em-400);
+  color:var(--em-700); font-family:var(--f-display);
+  font-weight:700; font-size:.8rem;
+}
+.game-intro-features{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+  gap:8px;
+}
+.game-intro-feature{
+  background:var(--em-100); color:var(--em-700);
+  border-radius:10px; padding:9px 11px;
+  font-size:.8rem; font-weight:600;
+  display:flex; align-items:center; gap:7px;
+}
+.game-intro-feature .dot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--em-500); flex:none;
+}
+.game-intro-note{
+  margin:18px 0 0; padding:11px 13px;
+  background:var(--gold-soft); color:var(--gold-dark);
+  border-radius:10px; font-size:.84rem; line-height:1.45;
+  border-left:4px solid var(--gold);
+}
+.game-intro-actions{display:flex;flex-direction:column;gap:10px;margin-top:18px}
+.game-intro .game-btn-secondary{
+  background:var(--em-100); color:var(--em-700);
+  border-color:var(--line);
+}
+.game-intro .game-btn-secondary:hover{background:#d5f4e6}
+
+.game-q-head{
+  display:flex; justify-content:space-between; align-items:center;
+  margin-bottom:14px; gap:10px; flex-wrap:wrap;
+}
+.game-q-progress{
+  font-size:.85rem; color:#fff;
+  background:rgba(255,255,255,0.15);
+  padding:6px 14px; border-radius:99px;
+  font-weight:700; font-variant-numeric:tabular-nums;
+  border:1.5px solid rgba(255,255,255,0.25);
+}
+.game-q-cat{
+  font-size:.72rem; font-weight:700; text-transform:uppercase;
+  letter-spacing:.5px; color:var(--em-900);
+  background:linear-gradient(135deg, var(--gold), var(--gold-dark));
+  padding:6px 12px; border-radius:99px;
+}
+.game-q-bar{
+  height:10px; background:rgba(255,255,255,0.15);
+  border-radius:99px; overflow:hidden; margin-bottom:16px;
+  border:1.5px solid rgba(255,255,255,0.2);
+  position:relative;
+}
+.game-q-bar-fill{
+  height:100%;
+  background:linear-gradient(90deg, var(--em-400), var(--gold));
+  width:0; transition:width .6s cubic-bezier(.4,0,.2,1);
+  border-radius:99px; position:relative;
+  box-shadow:0 0 12px rgba(242,193,78,0.5);
+}
+.game-stats{display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap}
+.stat-pill{
+  display:inline-flex; align-items:center; gap:6px;
+  background:rgba(255,255,255,0.15);
+  border:1.5px solid rgba(255,255,255,0.25);
+  color:#fff; padding:6px 12px; border-radius:99px;
+  font-size:.82rem; font-weight:600;
+  transition:transform .2s, background .2s;
+}
+.stat-pill.bump{animation:statBump .5s ease}
+@keyframes statBump{
+  0%{transform:scale(1)}
+  50%{transform:scale(1.18);background:rgba(242,193,78,0.4)}
+  100%{transform:scale(1)}
+}
+.stat-pill .lbl{opacity:.85;font-weight:400}
+.stat-pill .val{
+  font-family:var(--f-display); font-weight:700; font-size:1rem;
+  color:var(--gold);
+}
+.stat-pill.streak .val{color:#ff6b6b}
+.game-timer{
+  display:inline-flex; align-items:center; gap:8px;
+  background:rgba(255,255,255,0.15);
+  border:1.5px solid rgba(255,255,255,0.25);
+  color:#fff; padding:6px 12px; border-radius:99px;
+  font-size:.85rem; font-weight:700;
+  margin-left:auto;
+}
+.game-timer.warn{
+  background:rgba(192,57,43,0.6);
+  border-color:var(--alert);
+  animation:timerPulse 1s ease-in-out infinite;
+}
+@keyframes timerPulse{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.05)}
+}
+.game-timer .clock{
+  width:14px;height:14px;border-radius:50%;
+  border:2px solid currentColor; position:relative;
+}
+.game-timer .clock::after{
+  content:""; position:absolute; left:50%; top:50%;
+  width:2px;height:4px; background:currentColor;
+  transform:translate(-50%,-100%);
+}
+.comodines{display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap}
+.comodin{
+  flex:1; min-width:100px;
+  padding:10px 14px;
+  background:linear-gradient(135deg, rgba(242,193,78,0.9), var(--gold-dark));
+  color:var(--em-900);
+  border:2px solid rgba(255,255,255,0.4);
+  border-radius:12px;
+  font-family:var(--f-display); font-weight:700;
+  font-size:.85rem; cursor:pointer;
+  transition:transform .2s, filter .2s;
+  display:flex; align-items:center; justify-content:center; gap:6px;
+  box-shadow:0 4px 12px rgba(242,193,78,0.4);
+  position:relative; overflow:hidden;
+}
+.comodin:hover:not(:disabled){transform:translateY(-2px); filter:brightness(1.1)}
+.comodin:active:not(:disabled){transform:scale(.96)}
+.comodin:disabled{opacity:.4; cursor:not-allowed; filter:grayscale(1)}
+.comodin .count{
+  background:rgba(0,0,0,0.2); padding:2px 8px;
+  border-radius:99px; font-size:.75rem;
+}
+.game-question{
+  font-size:1.1rem; font-weight:700; line-height:1.45;
+  color:var(--ink); margin:0 0 20px;
+  padding:18px 20px;
+  background:linear-gradient(135deg, rgba(255,255,255,0.98), rgba(230,250,242,0.95));
+  border-left:6px solid var(--gold);
+  border-radius:14px;
+  box-shadow:0 8px 22px rgba(0,0,0,0.2);
+}
+.game-question b{color:var(--em-600)}
+.game-options{display:flex; flex-direction:column; gap:12px}
+.game-opt{
+  display:flex; align-items:center; gap:14px;
+  padding:16px 20px;
+  background:linear-gradient(135deg, rgba(255,255,255,0.98), rgba(230,250,242,0.95));
+  color:var(--ink);
+  border:2px solid rgba(255,255,255,0.4);
+  border-radius:14px;
+  text-align:left; font-size:1rem; font-weight:600;
+  line-height:1.4; cursor:pointer; min-height:60px;
+  transition:transform .2s ease, background .2s, border-color .2s, box-shadow .2s;
+  position:relative; overflow:hidden;
+  box-shadow:0 4px 14px rgba(0,0,0,0.15);
+}
+.game-opt::before{
+  content:""; position:absolute; left:0; top:0; bottom:0;
+  width:4px; background:var(--em-400);
+  transition:width .2s, background .2s;
+}
+.game-opt:hover:not(:disabled){
+  border-color:var(--gold);
+  transform:translateX(6px) scale(1.01);
+  box-shadow:0 8px 22px rgba(0,0,0,0.25);
+}
+.game-opt:hover:not(:disabled)::before{width:8px;background:var(--gold)}
+.game-opt:active:not(:disabled){transform:translateX(3px) scale(.99)}
+.game-opt:disabled{cursor:default}
+.game-opt.correct{
+  background:linear-gradient(135deg, #d4f4e2, #a8e8c8);
+  border-color:var(--ok); color:var(--ok); font-weight:700;
+  animation:popOk .6s ease;
+  box-shadow:0 0 0 3px rgba(30,132,73,0.3);
+}
+.game-opt.correct::before{width:8px;background:var(--ok)}
+.game-opt.wrong{
+  background:linear-gradient(135deg, #fdd, #fbb);
+  border-color:var(--alert); color:var(--alert);
+  animation:shake .5s ease;
+}
+.game-opt.wrong::before{width:8px;background:var(--alert)}
+.game-opt.dimmed{opacity:.35}
+.game-opt-mark{
+  width:28px; height:28px; flex:none;
+  display:grid; place-items:center;
+  border-radius:50%;
+  background:var(--em-100); color:var(--em-700);
+  font-weight:700; font-size:1rem;
+  transition:background .2s, color .2s;
+}
+.game-opt.correct .game-opt-mark{background:var(--ok); color:#fff}
+.game-opt.correct .game-opt-mark::after{content:"v"}
+.game-opt.wrong .game-opt-mark{background:var(--alert); color:#fff}
+.game-opt.wrong .game-opt-mark::after{content:"x"}
+@keyframes popOk{0%{transform:scale(1)}40%{transform:scale(1.05)}100%{transform:scale(1)}}
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  25%{transform:translateX(-6px)}
+  75%{transform:translateX(6px)}
+}
+.game-feedback{
+  margin-top:16px; padding:14px 16px; border-radius:12px;
+  background:linear-gradient(135deg, #d4f4e2, #a8e8c8);
+  border-left:4px solid var(--ok);
+  font-size:.95rem; line-height:1.55; color:var(--ink);
+  animation:bubbleIn .4s ease both;
+}
+.game-feedback.wrong{
+  background:linear-gradient(135deg, #fdecea, #fbd4d0);
+  border-left-color:var(--alert);
+}
+.game-feedback b{display:inline-block; margin-right:4px}
+.game-next{
+  display:block; width:100%; margin-top:16px;
+  padding:15px 20px;
+  background:linear-gradient(135deg, var(--em-600), var(--em-400));
+  color:#fff; border:none; border-radius:12px;
+  font-family:var(--f-display); font-weight:700; font-size:1.05rem;
+  cursor:pointer;
+  box-shadow:0 6px 18px rgba(14,122,95,0.4);
+  transition:transform .2s, filter .2s;
+  position:relative; overflow:hidden;
+}
+.game-next:hover{transform:translateY(-2px); filter:brightness(1.08)}
+.game-next:active{transform:translateY(0) scale(.98)}
+.game-results{
+  text-align:center; padding:20px 10px;
+  display:flex; flex-direction:column; align-items:center;
+  animation:fadeIn .5s ease both;
+}
+.game-results-badge{
+  width:110px; height:110px; border-radius:50%;
+  background:linear-gradient(135deg, var(--gold), var(--gold-dark));
+  color:var(--em-900); display:grid; place-items:center;
+  font-family:var(--f-display); font-weight:700; font-size:2.5rem;
+  margin-bottom:16px;
+  box-shadow:0 8px 28px rgba(242,193,78,0.6), 0 0 0 4px rgba(255,255,255,0.4);
+  animation:bounceIn .8s ease;
+}
+@keyframes bounceIn{
+  0%{transform:scale(.4);opacity:0}
+  60%{transform:scale(1.15)}
+  100%{transform:scale(1);opacity:1}
+}
+.game-results h3{
+  font-family:var(--f-display); color:#fff;
+  font-size:1.7rem; margin:0 0 8px; font-weight:700;
+  text-shadow:0 2px 8px rgba(0,0,0,0.3);
+}
+.game-results-score{
+  font-size:1.05rem; color:rgba(255,255,255,0.9);
+  margin:0 0 6px;
+}
+.game-results-score b{color:var(--gold); font-size:1.3rem}
+.stars-big{
+  display:flex; gap:10px; justify-content:center;
+  margin:16px 0;
+}
+.star-big{
+  width:52px;height:52px;
+  clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
+  background:rgba(255,255,255,0.2);
+  animation:starPop .55s cubic-bezier(.34,1.56,.64,1) backwards;
+}
+.star-big.filled{
+  background:linear-gradient(135deg, var(--gold), var(--gold-dark));
+  filter:drop-shadow(0 0 8px rgba(242,193,78,0.7));
+  animation:starPop .55s cubic-bezier(.34,1.56,.64,1) backwards,
+           starShine 2s ease-in-out infinite .7s;
+}
+@keyframes starPop{
+  0%{transform:scale(0) rotate(-180deg)}
+  70%{transform:scale(1.15) rotate(10deg)}
+  100%{transform:scale(1) rotate(0)}
+}
+@keyframes starShine{
+  0%,100%{filter:drop-shadow(0 0 8px rgba(242,193,78,0.7))}
+  50%{filter:drop-shadow(0 0 18px rgba(242,193,78,1))}
+}
+.star-big:nth-child(1){animation-delay:0s,0s}
+.star-big:nth-child(2){animation-delay:.15s,.15s}
+.star-big:nth-child(3){animation-delay:.3s,.3s}
+.game-results-msg{
+  color:rgba(255,255,255,0.85); font-size:.95rem;
+  line-height:1.6; max-width:420px; margin:0 auto 22px;
+}
+.game-results-actions{
+  display:flex; flex-direction:column; gap:10px;
+  max-width:340px; width:100%; margin:0 auto;
+}
+.game-btn-primary{
+  padding:15px 20px;
+  background:linear-gradient(135deg, var(--gold), var(--gold-dark));
+  color:var(--em-900); border:none; border-radius:12px;
+  font-family:var(--f-display); font-weight:700; font-size:1rem;
+  cursor:pointer;
+  box-shadow:0 6px 18px rgba(242,193,78,0.4);
+  transition:transform .2s, filter .2s;
+  position:relative; overflow:hidden;
+}
+.game-btn-primary:hover{transform:translateY(-2px); filter:brightness(1.08)}
+.game-btn-primary:active{transform:translateY(0) scale(.98)}
+.game-btn-secondary{
+  padding:14px 20px;
+  background:rgba(255,255,255,0.15); color:#fff;
+  border:2px solid rgba(255,255,255,0.4); border-radius:12px;
+  font-family:var(--f-display); font-weight:700; font-size:1rem;
+  cursor:pointer; transition:transform .2s, background .2s;
+  position:relative; overflow:hidden;
+}
+.game-btn-secondary:hover{background:rgba(255,255,255,0.28);transform:translateY(-2px)}
+.game-btn-secondary:active{transform:translateY(0) scale(.98)}
+
+/* Confetti + floaters */
+.confetti-piece{
+  position:fixed; top:-20px; width:10px; height:14px;
+  border-radius:2px; pointer-events:none; z-index:9998;
+  animation:confettiFall 2.2s ease-in forwards;
+}
+@keyframes confettiFall{
+  to{transform:translateY(110vh) rotate(720deg); opacity:0}
+}
+.float-plus{
+  position:fixed; pointer-events:none; z-index:9997;
+  font-family:var(--f-display); font-weight:700; font-size:1.6rem;
+  color:var(--gold);
+  text-shadow:0 2px 8px rgba(0,0,0,0.4);
+  animation:floatUp 1.2s ease-out forwards;
+}
+@keyframes floatUp{
+  0%{opacity:0;transform:translateY(0) scale(.5)}
+  20%{opacity:1;transform:translateY(-10px) scale(1.3)}
+  100%{opacity:0;transform:translateY(-80px) scale(1)}
+}
+.flying-star{
+  position:fixed; pointer-events:none; z-index:9997;
+  width:20px;height:20px;
+  clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
+  background:var(--gold);
+  animation:flyStar 1s ease-out forwards;
+}
+@keyframes flyStar{
+  0%{opacity:1;transform:scale(1) rotate(0)}
+  100%{opacity:0;transform:scale(.5) rotate(360deg) translateY(-100px)}
+}
+
+/* Responsive */
+@media (max-width:600px){
+  :root{--fs:16px}
+  .who p{display:none}
+  .star-big{width:44px;height:44px}
+  .hero h2{font-size:1.4rem}
+  .game-results-badge{width:90px;height:90px;font-size:2rem}
+  .capsules-grid,.games-grid,.quick-grid{grid-template-columns:1fr}
+  header{padding:14px}
+  .tools{width:100%}
+  .nav-tab{font-size:.82rem;padding:12px 6px;min-width:70px}
+  .nav-tab .ico{width:20px;height:20px;font-size:.68rem}
+  .capsule-hd{flex-direction:column;text-align:center}
+  .instr-hero{flex-direction:column;text-align:center}
+  .game-intro{padding:18px}
+  .game-intro-hero{flex-direction:column;text-align:center}
+  .game-intro-features{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header>
+    <div class="avatar" aria-hidden="true">A</div>
+    <div class="who">
+      <h1>Azucena</h1>
+      <p>Aprende, juega y vive bien con diabetes</p>
+    </div>
+    <div class="tools">
+      <button class="tbtn" id="bigger" type="button" aria-label="Letra mas grande">A+</button>
+      <button class="tbtn" id="smaller" type="button" aria-label="Letra mas pequena">A-</button>
+      <button class="tbtn" id="sound" type="button" aria-pressed="true">Sonido</button>
+      <button class="tbtn sos" id="sos" type="button">SOS</button>
+    </div>
+  </header>
+
+  <nav class="main-nav" role="tablist">
+    <button class="nav-tab active" data-tab="home" role="tab">
+      <span class="ico">I</span>Inicio
+    </button>
+    <button class="nav-tab" data-tab="learn" role="tab">
+      <span class="ico">A</span>Aprender
+    </button>
+    <button class="nav-tab" data-tab="games" role="tab">
+      <span class="ico">J</span>Juegos
+    </button>
+    <button class="nav-tab" data-tab="chat" role="tab">
+      <span class="ico">C</span>Chat
+    </button>
+  </nav>
+
+  <main>
+    <section class="tab-panel active" id="tab-home">
+      <div class="hero">
+        <h2>Bienvenido a Azucena</h2>
+        <p>Su companero para aprender a vivir bien con diabetes. Todo con palabras sencillas y a su ritmo.</p>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <span class="n" id="homeCapsules">0</span>
+            <span class="l">Capsulas vistas</span>
+          </div>
+          <div class="hero-stat">
+            <span class="n" id="homeStars">0</span>
+            <span class="l">Estrellas</span>
+          </div>
+          <div class="hero-stat">
+            <span class="n" id="homeGames">0</span>
+            <span class="l">Juegos ganados</span>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="section-title">Continua aprendiendo <span class="sub" id="homeNextLabel"></span></h2>
+      <div class="quick-grid" id="homeNextCapsule"></div>
+
+      <h2 class="section-title">Practica con juegos</h2>
+      <div class="quick-grid" id="homeQuickGames"></div>
+
+      <h2 class="section-title">Habla con Azucena</h2>
+      <div class="quick-grid">
+        <button class="quick-card" data-action="chat">
+          <span class="quick-icon">?</span>
+          <span class="quick-info">
+            <span class="quick-title">Hacer una pregunta</span>
+            <span class="quick-desc">Escriba o toque un tema para saber mas</span>
+          </span>
+        </button>
+        <button class="quick-card alert" data-action="sos">
+          <span class="quick-icon">!</span>
+          <span class="quick-info">
+            <span class="quick-title">Es una emergencia</span>
+            <span class="quick-desc">Numeros de emergencia y que hacer</span>
+          </span>
+        </button>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="tab-learn">
+      <div id="learn-view"></div>
+    </section>
+
+    <section class="tab-panel" id="tab-games">
+      <div id="games-view"></div>
+    </section>
+
+    <section class="tab-panel" id="tab-chat">
+      <div id="chat-tab">
+        <div id="chat-messages"></div>
+        <div id="chat-options"></div>
+        <form id="chat-form">
+          <label for="txt" class="sr-only">Escriba su pregunta</label>
+          <input id="txt" autocomplete="off" placeholder="Escriba su pregunta, por ejemplo: metformina">
+          <button id="send" type="submit">Enviar</button>
+        </form>
+        <p class="chat-legal">Azucena da educacion general basada en los Estandares de Atencion en Diabetes de la ADA 2026. No reemplaza a su medico ni a su farmaceutico.</p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- Game overlay -->
+<div id="gameOverlay" hidden>
+  <div class="game-shell">
+    <div class="game-hd">
+      <button class="game-hd-back" id="gameBack" type="button" aria-label="Volver"><span class="chev" aria-hidden="true"></span></button>
+      <div class="game-hd-title" id="gameTitle">Juego<small></small></div>
+      <div class="game-hd-stars">
+        <span class="star-mini"></span>
+        <span id="gameTotalStars">0</span>
+      </div>
+    </div>
+    <div class="game-body" id="gameBody"></div>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+/* ============================================================
+   CONFIGURACION DE MEDIA
+   Aqui puede agregar URLs de infografias y videos por capsula.
+   Ejemplo:
+     infographic: { url: 'https://ejemplo.com/mi-imagen.jpg', caption: 'Mi pie' }
+     video: { url: 'https://youtube.com/watch?v=ABC123', title: 'Como medirme' }
+   Deje la url vacia para mostrar el espacio reservado.
+   ============================================================ */
+
+const CAPSULES = [
+  {
+    id:'que-es', icon:'A', title:'Que es la diabetes tipo 2',
+    summary:'Aprende como funciona la insulina y por que sube el azucar.',
+    infographic:{
+      url:'', // <-- pega aqui tu URL de infografia
+      alt:'Infografia sobre la insulina',
+      caption:'Como funciona la insulina en el cuerpo'
+    },
+    video:{
+      url:'', // <-- pega aqui tu URL de video (YouTube o embed)
+      title:'Video: Que es la diabetes tipo 2'
+    },
+    sections:[
+      {h:'La llave y la puerta',
+       p:'Cuando comemos, la comida se convierte en azucar (glucosa). La insulina es como una llave que abre la puerta de las celulas para que el azucar entre y nos de energia.',
+       list:[
+         'En la diabetes tipo 2 la llave no funciona bien.',
+         'Con los anos, el pancreas fabrica menos llaves.',
+         'El azucar se queda en la sangre y sube.'
+       ]},
+      {h:'No se cura, pero se controla',
+       p:'Con medicinas y buenos habitos se puede vivir muchos anos y bien.',
+       tip:'No es culpa suya. Lo importante es lo que hacemos desde hoy.'},
+      {h:'Por que me dio',
+       p:'Se juntan varias cosas:',
+       list:[
+         'Familiares con diabetes (herencia).',
+         'Sobrepeso, sobre todo grasa en la panza.',
+         'Poca actividad fisica.',
+         'Comidas y bebidas con mucha azucar.'
+       ]}
+    ],
+    relatedGame:'semaforo'
+  },
+  {
+    id:'metas', icon:'M', title:'Mis metas de control',
+    summary:'Cuales son los numeros que debe cuidar y por que.',
+    infographic:{url:'', alt:'Tabla de metas', caption:'Metas de control para la mayoria de adultos'},
+    video:{url:'', title:'Video: Como leer su glucometro'},
+    sections:[
+      {h:'Los numeros que importan',
+       p:'Para la mayoria de adultos con diabetes, estas son las metas:',
+       list:[
+         'Azucar en ayunas: 80 a 130 mg/dL.',
+         'Azucar 1 a 2 horas despues de comer: menos de 180 mg/dL.',
+         'Hemoglobina glicosilada (HbA1c): menos de 7 por ciento.',
+         'Presion arterial: menos de 130/80.'
+       ]},
+      {h:'La HbA1c es su nota del trimestre',
+       p:'La HbA1c muestra el promedio de azucar de los ultimos 2 a 3 meses. Se hace en el laboratorio cada 3 a 6 meses.',
+       tip:'En adultos mayores, el medico puede poner metas mas altas para evitar bajones.'}
+    ],
+    relatedGame:'semaforo'
+  },
+  {
+    id:'comida', icon:'P', title:'Alimentacion y el plato',
+    summary:'El metodo del plato y como elegir sus bebidas.',
+    infographic:{url:'', alt:'Metodo del plato', caption:'El plato saludable: mitad verduras, un cuarto proteina, un cuarto carbohidratos'},
+    video:{url:'', title:'Video: Como armar un plato saludable'},
+    sections:[
+      {h:'El metodo del plato',
+       p:'Use un plato mediano y dividalo asi:',
+       list:[
+         'Mitad del plato: verduras (guisquil, ejotes, brocoli, hierba mora, chipilin).',
+         'Un cuarto: proteina (pollo sin piel, huevo, pescado, frijol, requeson).',
+         'Un cuarto: carbohidratos (tortilla, arroz, papa, pan, pasta).'
+       ]},
+      {h:'Que tomar',
+       p:'El agua pura es la mejor opcion. Evite aguas gaseosas, jugos de caja, atoles y cafe con mucha azucar.',
+       tip:'Mejor fruta entera que en jugo. La fibra de la fruta ayuda a que el azucar suba mas lento.'}
+    ],
+    relatedGame:'plato'
+  },
+  {
+    id:'medicamentos', icon:'Rx', title:'Mis medicamentos',
+    summary:'Como se toman, para que sirven y que cuidar.',
+    infographic:{url:'', alt:'Horario de medicamentos', caption:'Ejemplo de horario de medicinas'},
+    video:{url:'', title:'Video: Como tomar metformina'},
+    sections:[
+      {h:'Los mas comunes',
+       list:[
+         'Metformina: con las comidas, todos los dias.',
+         'Semaglutida inyectable: 1 vez por semana, mismo dia.',
+         'Semaglutida en pastilla: en ayunas, 30 minutos antes de comer.',
+         'Empagliflozina/dapagliflozina: 1 vez al dia, con agua.',
+         'Glibenclamida: con el desayuno, no se salte comidas.',
+         'Insulina: como le indico su medico.'
+       ]},
+      {h:'Consejos para no olvidar',
+       p:'Use un pastillero con dias, ponga una alarma en el celular, una sus medicinas al desayuno o lavarse los dientes.',
+       tip:'Si una medicina le cae mal o es muy cara, digaselo a su farmaceutico. No la deje por su cuenta.'}
+    ],
+    relatedGame:'meds'
+  },
+  {
+    id:'hipo', icon:'B', title:'Azucar baja (hipoglucemia)',
+    summary:'Senales de alerta y la regla del 15.',
+    infographic:{url:'', alt:'Regla del 15', caption:'La regla del 15 para azucar baja'},
+    video:{url:'', title:'Video: Como tratar un bajon de azucar'},
+    sections:[
+      {h:'Senales de azucar baja',
+       p:'Cuando el azucar esta debajo de 70 mg/dL puede sentir:',
+       list:[
+         'Temblor o sudor frio.',
+         'Corazon acelerado.',
+         'Mareo o hambre fuerte.',
+         'Mal humor o confusion.'
+       ]},
+      {h:'La regla del 15',
+       p:'Actue rapido:',
+       list:[
+         'Tome 15 gramos de azucar rapida (medio vaso de jugo o gaseosa normal).',
+         'Espere 15 minutos.',
+         'Vuelva a medirse.',
+         'Si sigue bajo, repita.'
+       ],
+       warn:'Si la persona esta desmayada o no puede tragar, NO le de nada por la boca. Llame a emergencias.'
+      }
+    ],
+    relatedGame:null
+  },
+  {
+    id:'pies', icon:'F', title:'Cuidado de los pies',
+    summary:'Revise sus pies todos los dias para evitar problemas.',
+    infographic:{url:'', alt:'Revision de pies', caption:'Pasos para revisar sus pies en casa'},
+    video:{url:'', title:'Video: Como revisar sus pies'},
+    sections:[
+      {h:'Todos los dias',
+       p:'Revise sus pies con buena luz. Use un espejo o pida ayuda a un familiar.',
+       list:[
+         'Busque heridas, ampollas o cambios de color.',
+         'Lave y seque bien entre los dedos.',
+         'No camine descalzo, ni en la casa.',
+         'Use zapatos comodos y calcetines sin costuras apretadas.'
+       ],
+       warn:'Si una herida en el pie no mejora en 2 dias, se pone roja, caliente o sale pus, consulte pronto.'
+      },
+      {h:'Ejercicio',
+       p:'Meta: 150 minutos a la semana. Caminar cuenta. Una caminata de 10 a 15 minutos despues de comer ayuda a bajar el azucar.'
+      }
+    ],
+    relatedGame:null
+  },
+  {
+    id:'ejercicio', icon:'E', title:'Ejercicio y movimiento',
+    summary:'Moverse es una de las mejores medicinas.',
+    infographic:{url:'', alt:'Metas de ejercicio', caption:'150 minutos a la semana'},
+    video:{url:'', title:'Video: Ejercicio seguro con diabetes'},
+    sections:[
+      {h:'Cuanto moverse',
+       p:'La meta es 150 minutos a la semana. Por ejemplo, 30 minutos 5 dias.',
+       list:[
+         'Caminar es excelente y no cuesta.',
+         'Una caminata de 10 a 15 minutos despues de comer baja el azucar.',
+         '2 dias por semana haga ejercicios de fuerza suaves.'
+       ]},
+      {h:'Seguridad',
+       p:'Si usa insulina o glibenclamida, midase antes de hacer ejercicio largo.',
+       tip:'Lleve siempre un dulce o jugo por si le da un bajon.'}
+    ],
+    relatedGame:null
+  },
+  {
+    id:'organos', icon:'O', title:'Rinones, higado y presion',
+    summary:'La diabetes afecta varios organos sin dar dolor.',
+    infographic:{url:'', alt:'Organos afectados', caption:'Como la diabetes afecta sus organos'},
+    video:{url:'', title:'Video: Proteja sus rinones'},
+    sections:[
+      {h:'Sus rinones',
+       p:'La diabetes y la presion alta danan los rinones sin dar dolor. Se revisan con orina y sangre al menos 1 vez al ano.',
+       list:[
+         'Controle el azucar y la presion.',
+         'Evite ibuprofeno, diclofenaco y naproxeno sin receta.',
+         'Tome suficiente agua.'
+       ]},
+      {h:'Su higado',
+       p:'Muchas personas con diabetes tienen higado graso. Bajar un poco de peso ya ayuda mucho.'},
+      {h:'Su presion',
+       p:'La meta es menos de 130/80. La presion alta casi nunca duele, por eso hay que medirla.'}
+    ],
+    relatedGame:null
+  },
+  {
+    id:'enfermedad', icon:'D', title:'Dias de enfermedad',
+    summary:'Que hacer cuando tiene gripe, vomitos o diarrea.',
+    infographic:{url:'', alt:'Reglas dias de enfermedad', caption:'Reglas para dias de enfermedad'},
+    video:{url:'', title:'Video: Manejo de la diabetes cuando se enferma'},
+    sections:[
+      {h:'Reglas importantes',
+       list:[
+         'NO deje la insulina por su cuenta, aunque coma menos.',
+         'Midase el azucar mas seguido.',
+         'Tome liquidos a sorbitos (agua, suero oral).'
+       ]},
+      {h:'Algunas medicinas se pausan',
+       p:'Si tiene vomitos o diarrea fuerte, avise a su medico. Puede que necesite pausar: metformina, empagliflozina, dapagliflozina, losartan o enalapril.',
+       warn:'Vaya a emergencia si el azucar esta arriba de 300 mg/dL varias veces, si vomita todo o si esta muy decaido.'}
+    ],
+    relatedGame:'quehago'
+  },
+  {
+    id:'emocional', icon:'V', title:'Vivir con diabetes',
+    summary:'Cuidar su mente tambien es cuidar su diabetes.',
+    infographic:{url:'', alt:'Bienestar emocional', caption:'Cuidar las emociones es parte del tratamiento'},
+    video:{url:'', title:'Video: Vivir bien con diabetes'},
+    sections:[
+      {h:'Es normal sentirse cansado',
+       p:'Tener diabetes es trabajo todos los dias. Sentirse frustrado, cansado o con miedo es comun y tiene nombre: distres por diabetes.'},
+      {h:'Que ayuda',
+       list:[
+         'Cuenteselo a su medico, enfermera o farmaceutico.',
+         'Pongase metas pequenas: caminar 10 minutos al dia.',
+         'Pida apoyo a su familia o a un grupo de pacientes.',
+         'Si se siente triste casi todos los dias, pida ayuda profesional.'
+       ],
+       tip:'Usted no esta solo(a). Pedir ayuda es parte de cuidarse.'}
+    ],
+    relatedGame:null
+  }
+];
+
+/* ============ JUEGOS (con instrucciones detalladas) ============ */
+const GAMES = {
+  semaforo:{
+    title:'Semaforo del azucar', short:'A',
+    desc:'Clasifica valores del glucometro como bajo, en meta o alto.',
+    learn:'Aprender a interpretar los numeros del glucometro.',
+    steps:[
+      'Le mostraremos un resultado del glucometro.',
+      'Usted elige si esta BAJO, EN META o ALTO.',
+      'Le explicamos si acerto y por que.',
+      'Al final ve su puntaje con estrellas.'
+    ],
+    features:['6 preguntas','Temporizador de 20 segundos','Comodin 50/50','Comodin Pista'],
+    options:['Bajo (menos de 70)','En meta','Alto'],
+    items:[
+      {q:'En ayunas: <b>110 mg/dL</b>',c:1,e:'En ayunas la meta es 80 a 130. Esta en meta.'},
+      {q:'Antes de almorzar: <b>62 mg/dL</b> con temblor',c:0,e:'Menos de 70 es baja. Aplique la regla del 15.'},
+      {q:'En ayunas: <b>168 mg/dL</b>',c:2,e:'Arriba de 130. Anotelo y avise a su medico.'},
+      {q:'Despues de comer: <b>150 mg/dL</b>',c:1,e:'Despues de comer la meta es menos de 180.'},
+      {q:'Despues de comer: <b>245 mg/dL</b>',c:2,e:'Alto. Revise porciones y medicinas.'},
+      {q:'Antes de dormir: <b>68 mg/dL</b>',c:0,e:'Bajo. Aplique la regla del 15.'}
+    ]
+  },
+  plato:{
+    title:'Arme su plato', short:'P',
+    desc:'Clasifica cada alimento en el plato saludable.',
+    learn:'Aplicar el metodo del plato en la vida diaria.',
+    steps:[
+      'Le mostraremos un alimento.',
+      'Usted elige donde va: mitad, un cuarto de proteina, un cuarto de carbohidrato, o mejor evitar.',
+      'Le explicamos la respuesta.',
+      'Al final ve su puntaje con estrellas.'
+    ],
+    features:['8 preguntas','Temporizador de 20 segundos','Comodin 50/50','Comodin Pista'],
+    options:['Mitad: verduras','Cuarto: proteina','Cuarto: carbohidratos','Mejor evitar'],
+    items:[
+      {q:'Guisquil y ejotes',c:0,e:'Verduras: mitad del plato.'},
+      {q:'Tortillas de maiz',c:2,e:'Carbohidrato: un cuarto del plato.'},
+      {q:'Huevo duro',c:1,e:'Proteina: un cuarto del plato.'},
+      {q:'Agua gaseosa',c:3,e:'Casi 10 cucharaditas de azucar. Mejor evitar.'},
+      {q:'Pechuga sin piel',c:1,e:'Proteina. Asada o cocida.'},
+      {q:'Hierba mora',c:0,e:'Verdura: mitad del plato.'},
+      {q:'Arroz',c:2,e:'Carbohidrato. Si come arroz, reduzca tortillas.'},
+      {q:'Pan dulce diario',c:3,e:'Sube mucho el azucar. Mejor evitar.'}
+    ]
+  },
+  meds:{
+    title:'Como se toma mi medicina?', short:'M',
+    desc:'Aprende la forma correcta de usar cada medicamento.',
+    learn:'Usar correctamente sus medicinas para la diabetes.',
+    steps:[
+      'Le mostramos un medicamento.',
+      'Usted elige la forma correcta de tomarlo.',
+      'Le explicamos por que.',
+      'Al final ve su puntaje con estrellas.'
+    ],
+    features:['7 preguntas','Temporizador de 20 segundos','Comodin 50/50','Comodin Pista'],
+    items:[
+      {q:'<b>Metformina</b>',o:['En ayunas','Con las comidas','Solo si sube el azucar'],c:1,e:'Con las comidas se reducen nauseas.'},
+      {q:'<b>Semaglutida inyectable</b>',o:['1 vez por semana','Todos los dias','1 vez al mes'],c:0,e:'Es semanal, el mismo dia.'},
+      {q:'<b>Semaglutida pastilla</b>',o:['Con desayuno','Con cena','En ayunas, 30 min antes'],c:2,e:'En ayunas, 30 minutos antes de comer.'},
+      {q:'<b>Empagliflozina</b>: que cuidado?',o:['Con cerveza','Dejar el agua','Tomar agua e higiene'],c:2,e:'Sacan azucar por la orina.'},
+      {q:'<b>Glibenclamida</b> si se salta comidas?',o:['Da azucar baja','Nada','Sube la presion'],c:0,e:'No se salte comidas.'},
+      {q:'<b>Insulina sin abrir</b>: donde?',o:['Congelador','Refrigeradora','Ventana'],c:1,e:'Refrigeradora, 2 a 8 grados.'},
+      {q:'<b>Sitagliptina + semaglutida</b>',o:['Si, siempre','Normalmente no'],c:1,e:'Trabajan por el mismo camino.'}
+    ]
+  },
+  quehago:{
+    title:'Que hago si...?', short:'Q',
+    desc:'Toma decisiones en el dia a dia con diabetes.',
+    learn:'Resolver situaciones reales del dia a dia.',
+    steps:[
+      'Le contamos una situacion de la vida diaria.',
+      'Usted elige que haria.',
+      'Le explicamos la mejor respuesta.',
+      'Al final ve su puntaje con estrellas.'
+    ],
+    features:['6 preguntas','Temporizador de 20 segundos','Comodin 50/50','Comodin Pista'],
+    items:[
+      {q:'Gripe, sin hambre, usa insulina',o:['Deja la insulina','Mide mas y llama al medico','Doble dosis'],c:1,e:'No deje la insulina por su cuenta.'},
+      {q:'Le regalan diclofenaco',o:['Pregunta al farmaceutico','Toma diario','Toma doble'],c:0,e:'Diclofenaco sube presion y dana rinon.'},
+      {q:'Le ofrecen te que "cura"',o:['Deja medicinas','Toma sin decir','Pregunta al farmaceutico'],c:2,e:'Ningun te cura la diabetes.'},
+      {q:'Ampolla en el pie',o:['La revienta','Lava, protege y consulta','No hace caso'],c:1,e:'Se infectan facil. No reviente.'},
+      {q:'Papa desmayado',o:['Jugo en la boca','Deja dormir','Emergencias, nada por boca'],c:2,e:'Llame al 122, 123 o 125.'},
+      {q:'Olvido inyeccion 2 dias',o:['Se la pone hoy','Doble proxima','Espera al mes'],c:0,e:'Si no han pasado 5 dias, apliquela.'}
+    ]
+  }
+};
+
+/* ============ ESTADO ============ */
+let soundOn = true, fs = 17;
+let audioCtx = null;
+let totalStars = 0, bestScores = {}, capsulesViewed = [];
+let gId = null, gIndex = 0, gScore = 0, gStreak = 0, gMaxStreak = 0;
+let gTimer = null, gTimeLeft = 20;
+let gComodin50 = 1, gComodinPista = 1;
+let gAnswered = false;
+let currentTab = 'home';
+let currentCapsuleId = null;
+let currentGameInstr = null;
+
+try {
+  const s = localStorage.getItem('azu-fs');
+  if (s) { fs = +s; document.documentElement.style.setProperty('--fs', fs+'px'); }
+  const st = localStorage.getItem('azu-totalStars');
+  if (st) totalStars = parseInt(st,10) || 0;
+  const bs = localStorage.getItem('azu-bestScores');
+  if (bs) bestScores = JSON.parse(bs) || {};
+  const cv = localStorage.getItem('azu-capsulesViewed');
+  if (cv) capsulesViewed = JSON.parse(cv) || [];
+} catch(e){}
+
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const wait = ms => new Promise(r => setTimeout(r, reduce ? 0 : ms));
+
+function saveState(){
+  try{
+    localStorage.setItem('azu-totalStars', totalStars);
+    localStorage.setItem('azu-bestScores', JSON.stringify(bestScores));
+    localStorage.setItem('azu-capsulesViewed', JSON.stringify(capsulesViewed));
+  }catch(e){}
+}
+
+function markViewed(id){
+  if(!capsulesViewed.includes(id)){
+    capsulesViewed.push(id);
+    saveState();
+  }
+}
+
+/* ============ AUDIO ============ */
+function initAudio(){
+  if(!audioCtx){
+    try{ audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){}
+  }
+  if(audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+}
+function tone(freq, dur, type){
+  if(!soundOn || !audioCtx) return;
+  try{
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = type || 'sine';
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0.07, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + dur);
+  }catch(e){}
+}
+function sndCorrect(){ if(!soundOn||!audioCtx)return; tone(523,.12); setTimeout(()=>tone(659,.12),90); setTimeout(()=>tone(784,.18),190); }
+function sndWrong(){ if(!soundOn||!audioCtx)return; tone(330,.18,'triangle'); setTimeout(()=>tone(247,.28,'triangle'),130); }
+function sndWin(){ if(!soundOn||!audioCtx)return; [523,659,784,1047].forEach((f,i)=>setTimeout(()=>tone(f,.16),i*110)); }
+function sndClick(){ if(!soundOn||!audioCtx)return; tone(880,.06); }
+function vibrate(ms){ try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){} }
+
+/* ============ CONFETTI / FLOATERS ============ */
+function launchConfetti(){
+  if(reduce) return;
+  const colors = ['#0e7a5f','#f2c14e','#2ec29a','#f2c14e','#ff6b6b','#7fe0bd'];
+  for(let i=0;i<70;i++){
+    const p = document.createElement('div');
+    p.className = 'confetti-piece';
+    p.style.left = Math.random()*100 + '%';
+    p.style.background = colors[Math.floor(Math.random()*colors.length)];
+    p.style.animationDelay = Math.random()*0.4 + 's';
+    p.style.animationDuration = (1.6 + Math.random()*1) + 's';
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(), 3400);
+  }
+}
+function floatPlus(text, x, y){
+  const el = document.createElement('div');
+  el.className = 'float-plus';
+  el.textContent = text;
+  el.style.left = (x-20) + 'px';
+  el.style.top = (y-20) + 'px';
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(), 1300);
+}
+function flyStar(x, y){
+  if(reduce) return;
+  const s = document.createElement('div');
+  s.className = 'flying-star';
+  s.style.left = x + 'px';
+  s.style.top = y + 'px';
+  document.body.appendChild(s);
+  setTimeout(()=>s.remove(), 1100);
+}
+function addRipple(e){
+  const btn = e.currentTarget;
+  const rect = btn.getBoundingClientRect();
+  const r = document.createElement('span');
+  r.className = 'ripple';
+  const size = Math.max(rect.width, rect.height);
+  r.style.width = r.style.height = size + 'px';
+  r.style.left = (e.clientX - rect.left - size/2) + 'px';
+  r.style.top = (e.clientY - rect.top - size/2) + 'px';
+  btn.appendChild(r);
+  setTimeout(()=>r.remove(), 650);
+}
+
+/* ============ NAVEGACION ============ */
+const tabs = document.querySelectorAll('.nav-tab');
+const panels = document.querySelectorAll('.tab-panel');
+
+function switchTab(name){
+  currentTab = name;
+  tabs.forEach(t=>t.classList.toggle('active', t.dataset.tab === name));
+  panels.forEach(p=>p.classList.toggle('active', p.id === 'tab-' + name));
+  if(name === 'home') renderHome();
+  if(name === 'learn') renderLearn();
+  if(name === 'games') renderGames();
+  if(name === 'chat') renderChatWelcome();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+tabs.forEach(t=>{
+  t.addEventListener('click', ()=>{ initAudio(); sndClick(); switchTab(t.dataset.tab); });
+});
+
+/* ============ HOME ============ */
+function renderHome(){
+  document.getElementById('homeCapsules').textContent = capsulesViewed.length;
+  document.getElementById('homeStars').textContent = totalStars;
+  document.getElementById('homeGames').textContent = Object.keys(bestScores).length;
+
+  // Siguiente capsula
+  const next = CAPSULES.find(c => !capsulesViewed.includes(c.id)) || CAPSULES[0];
+  const nextLabel = capsulesViewed.length === CAPSULES.length
+    ? 'Todas vistas - repase cualquiera'
+    : 'Siguiente: ' + next.title;
+  document.getElementById('homeNextLabel').textContent = nextLabel;
+
+  const nc = document.getElementById('homeNextCapsule');
+  nc.innerHTML = '';
+  nc.appendChild(capsuleCard(next));
+
+  // Juegos rapidos
+  const qg = document.getElementById('homeQuickGames');
+  qg.innerHTML = '';
+  const quickGames = Object.keys(GAMES).slice(0, 2);
+  quickGames.forEach(k=>{
+    const g = GAMES[k];
+    const btn = document.createElement('button');
+    btn.className = 'quick-card';
+    btn.type = 'button';
+    btn.innerHTML =
+      '<span class="quick-icon">' + g.short + '</span>' +
+      '<span class="quick-info">' +
+        '<span class="quick-title">' + g.title + '</span>' +
+        '<span class="quick-desc">' + g.desc + '</span>' +
+      '</span>';
+    btn.addEventListener('click', addRipple);
+    btn.addEventListener('click', ()=>{ initAudio(); sndClick(); switchTab('games'); showGameInstructions(k); });
+    qg.appendChild(btn);
+  });
+}
+
+// Acciones rapidas de home
+document.addEventListener('click', e=>{
+  const card = e.target.closest('.quick-card[data-action]');
+  if(!card) return;
+  initAudio(); sndClick();
+  const act = card.dataset.action;
+  if(act === 'chat') switchTab('chat');
+  else if(act === 'sos'){ switchTab('chat'); chatShowSOS(); }
+});
+
+/* ============ LEARN ============ */
+const learnView = document.getElementById('learn-view');
+
+function renderLearn(){
+  if(currentCapsuleId){
+    return renderCapsuleDetail(currentCapsuleId);
+  }
+  const total = CAPSULES.length;
+  const done = capsulesViewed.length;
+  const pct = total ? (done / total) * 100 : 0;
+
+  learnView.innerHTML =
+    '<div class="learn-intro">' +
+      '<h2>Aprender paso a paso</h2>' +
+      '<p>10 capsulas cortas. Elija una y avance a su ritmo.</p>' +
+    '</div>' +
+    '<div class="progress-track">' +
+      '<span class="progress-label">Su progreso</span>' +
+      '<div class="bar"><div class="fill" style="width:' + pct + '%"></div></div>' +
+      '<span class="num">' + done + '/' + total + '</span>' +
+    '</div>' +
+    '<div class="capsules-grid" id="capsulesGrid"></div>';
+
+  const grid = document.getElementById('capsulesGrid');
+  CAPSULES.forEach((c, i)=>{
+    const card = capsuleCard(c);
+    card.style.animationDelay = (i * 50) + 'ms';
+    grid.appendChild(card);
+  });
+}
+
+function capsuleCard(c){
+  const visited = capsulesViewed.includes(c.id);
+  const hasMedia = (c.infographic && c.infographic.url) || (c.video && c.video.url);
+  const badgeMedia = hasMedia ? '<span class="capsule-badge media">Con media</span>' : '';
+  const badgeDone = visited ? '<span class="capsule-badge done">Visto</span>' : '<span class="capsule-badge">Nuevo</span>';
+
+  const card = document.createElement('button');
+  card.type = 'button';
+  card.className = 'capsule-card' + (visited ? ' visited' : '');
+  card.innerHTML =
+    '<div class="capsule-head">' +
+      '<div class="capsule-icon">' + c.icon + '</div>' +
+      '<div>' +
+        '<h3 class="capsule-title">' + c.title + '</h3>' +
+        '<p class="capsule-summary">' + c.summary + '</p>' +
+      '</div>' +
+    '</div>' +
+    '<div class="capsule-meta">' + badgeDone + badgeMedia + '</div>';
+  card.addEventListener('click', addRipple);
+  card.addEventListener('click', ()=>{
+    initAudio(); sndClick();
+    openCapsule(c.id);
+  });
+  return card;
+}
+
+function openCapsule(id){
+  currentCapsuleId = id;
+  markViewed(id);
+  renderCapsuleDetail(id);
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function renderCapsuleDetail(id){
+  const c = CAPSULES.find(x=>x.id === id);
+  if(!c){ currentCapsuleId = null; return renderLearn(); }
+
+  const idx = CAPSULES.findIndex(x=>x.id === id);
+  const prev = CAPSULES[idx-1];
+  const next = CAPSULES[idx+1];
+
+  let html = '<div class="capsule-detail">';
+  html += '<button class="back-btn" id="capsuleBack"><span class="chev" aria-hidden="true"></span>Volver a capsulas</button>';
+  html += '<div class="capsule-hd">' +
+    '<div class="capsule-icon">' + c.icon + '</div>' +
+    '<div><h2>' + c.title + '</h2><p>' + c.summary + '</p></div>' +
+  '</div>';
+
+  // Infografia
+  if(c.infographic){
+    html += '<span class="media-label">Infografia</span>';
+    html += renderMedia('infographic', c.infographic);
+  }
+
+  // Video
+  if(c.video){
+    html += '<span class="media-label video">Video</span>';
+    html += renderMedia('video', c.video);
+  }
+
+  // Contenido
+  html += '<div class="capsule-body">';
+  c.sections.forEach(s=>{
+    html += '<h3>' + s.h + '</h3>';
+    if(s.p) html += '<p>' + s.p + '</p>';
+    if(s.list) html += '<ul>' + s.list.map(li=>'<li>' + li + '</li>').join('') + '</ul>';
+    if(s.tip) html += '<div class="capsule-tip"><b>Consejo:</b> ' + s.tip + '</div>';
+    if(s.warn) html += '<div class="capsule-warn"><b>Cuidado:</b> ' + s.warn + '</div>';
+  });
+  html += '</div>';
+
+  // Acciones
+  html += '<div class="capsule-actions">';
+  if(c.relatedGame){
+    html += '<button class="btn-primary" data-playgame="' + c.relatedGame + '">Practicar con juego</button>';
+  }
+  if(next){
+    html += '<button class="btn-secondary" data-nextcapsule="' + next.id + '">Siguiente: ' + next.title + '</button>';
+  } else {
+    html += '<button class="btn-secondary" data-nextcapsule="__done">Termine todas las capsulas</button>';
+  }
+  html += '</div>';
+
+  html += '</div>';
+  learnView.innerHTML = html;
+
+  // eventos
+  document.getElementById('capsuleBack').addEventListener('click', ()=>{
+    currentCapsuleId = null;
+    renderLearn();
+  });
+  const gbtn = learnView.querySelector('[data-playgame]');
+  if(gbtn){
+    gbtn.addEventListener('click', addRipple);
+    gbtn.addEventListener('click', ()=>{ sndClick(); switchTab('games'); showGameInstructions(gbtn.dataset.playgame); });
+  }
+  const nbtn = learnView.querySelector('[data-nextcapsule]');
+  if(nbtn){
+    nbtn.addEventListener('click', addRipple);
+    nbtn.addEventListener('click', ()=>{
+      sndClick();
+      const target = nbtn.dataset.nextcapsule;
+      if(target === '__done'){ currentCapsuleId = null; renderLearn(); }
+      else { openCapsule(target); }
+    });
+  }
+}
+
+function renderMedia(kind, media){
+  const hasUrl = media.url && media.url.trim();
+  const isVideo = kind === 'video';
+  const fallbackLabel = isVideo ? 'VIDEO' : 'IMG';
+  const title = isVideo ? (media.title || 'Video educativo') : (media.caption || 'Infografia');
+
+  if(!hasUrl){
+    return '<div class="media-frame">' +
+      '<div class="media-fallback' + (isVideo ? ' video' : '') + '">' +
+        '<div class="media-fallback-icon">' + fallbackLabel + '</div>' +
+        '<strong>' + title + '</strong>' +
+        '<span>Espacio reservado. Para agregar, abra el codigo y busque esta capsula en <code>CAPSULES</code>.</span>' +
+      '</div>' +
+    '</div>';
+  }
+
+  if(isVideo){
+    const embed = youtubeEmbed(media.url);
+    return '<div class="media-frame">' +
+      '<iframe src="' + embed + '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="' + (media.title||'Video') + '"></iframe>' +
+    '</div>';
+  }
+
+  return '<div class="media-frame">' +
+    '<img src="' + media.url + '" alt="' + (media.alt||'Infografia') + '" loading="lazy">' +
+    (media.caption ? '<div class="media-caption">' + media.caption + '</div>' : '') +
+  '</div>';
+}
+
+function youtubeEmbed(url){
+  if(!url) return '';
+  let m = url.match(/[?&]v=([\w-]+)/);
+  if(m) return 'https://www.youtube.com/embed/' + m[1];
+  m = url.match(/youtu\.be\/([\w-]+)/);
+  if(m) return 'https://www.youtube.com/embed/' + m[1];
+  return url;
+}
+
+/* ============ GAMES TAB ============ */
+const gamesView = document.getElementById('games-view');
+
+function renderGames(){
+  if(currentGameInstr){
+    return renderGameInstructions(currentGameInstr);
+  }
+  gamesView.innerHTML =
+    '<div class="learn-intro">' +
+      '<h2>Juegos para practicar</h2>' +
+      '<p>Aprenda mientras se divierte. Cada juego tiene instrucciones y comodines.</p>' +
+    '</div>' +
+    '<div class="games-grid" id="gamesGrid"></div>';
+
+  const grid = document.getElementById('gamesGrid');
+  Object.keys(GAMES).forEach((k, i)=>{
+    const g = GAMES[k];
+    const best = bestScores[k];
+    const bestTag = typeof best === 'number' ? '<span class="game-tag best">Mejor: ' + best + '/' + g.items.length + '</span>' : '';
+    const card = document.createElement('button');
+    card.type = 'button';
+    card.className = 'game-card';
+    card.style.animationDelay = (i * 60) + 'ms';
+    card.innerHTML =
+      '<div class="game-head">' +
+        '<div class="game-icon">' + g.short + '</div>' +
+        '<div>' +
+          '<h3 class="game-title">' + g.title + '</h3>' +
+          '<p class="game-desc">' + g.desc + '</p>' +
+        '</div>' +
+      '</div>' +
+      '<div class="game-meta">' +
+        '<span class="game-tag">' + g.items.length + ' preguntas</span>' +
+        '<span class="game-tag gold">Comodines</span>' +
+        bestTag +
+      '</div>';
+    card.addEventListener('click', addRipple);
+    card.addEventListener('click', ()=>{ initAudio(); sndClick(); showGameInstructions(k); });
+    grid.appendChild(card);
+  });
+}
+
+function showGameInstructions(id){
+  currentGameInstr = id;
+  renderGameInstructions(id);
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function renderGameInstructions(id){
+  const g = GAMES[id];
+  if(!g){ currentGameInstr = null; return renderGames(); }
+
+  let html = '<div class="game-instr">';
+  html += '<button class="back-btn" id="gameInstrBack"><span class="chev" aria-hidden="true"></span>Volver a juegos</button>';
+  html += '<div class="instr-hero">' +
+    '<div class="game-icon">' + g.short + '</div>' +
+    '<div><h2>' + g.title + '</h2><p>' + g.desc + '</p></div>' +
+  '</div>';
+
+  html += '<div class="instr-block">' +
+    '<h3>Que va a aprender</h3>' +
+    '<p>' + g.learn + '</p>' +
+  '</div>';
+
+  html += '<div class="instr-block">' +
+    '<h3>Como se juega</h3>' +
+    '<ol>' + g.steps.map(s=>'<li>' + s + '</li>').join('') + '</ol>' +
+  '</div>';
+
+  html += '<div class="instr-block">' +
+    '<h3>Caracteristicas</h3>' +
+    '<div class="instr-features">' +
+      g.features.map((f,i)=>'<div class="instr-feature' + (i<2?'':' gold') + '"><span class="dot"></span>' + f + '</div>').join('') +
+    '</div>' +
+  '</div>';
+
+  html += '<div class="capsule-actions">' +
+    '<button class="btn-primary" id="startGameBtn">Comenzar juego</button>' +
+    '<button class="btn-secondary" id="backToGamesBtn">Elegir otro</button>' +
+  '</div>';
+
+  html += '</div>';
+  gamesView.innerHTML = html;
+
+  document.getElementById('gameInstrBack').addEventListener('click', ()=>{
+    currentGameInstr = null;
+    renderGames();
+  });
+  document.getElementById('startGameBtn').addEventListener('click', addRipple);
+  document.getElementById('startGameBtn').addEventListener('click', ()=>{
+    sndClick();
+    startGame(id);
+  });
+  document.getElementById('backToGamesBtn').addEventListener('click', addRipple);
+  document.getElementById('backToGamesBtn').addEventListener('click', ()=>{
+    sndClick();
+    currentGameInstr = null;
+    renderGames();
+  });
+}
+
+/* ============ GAME OVERLAY ============ */
+const gameOverlay = document.getElementById('gameOverlay');
+const gameBody = document.getElementById('gameBody');
+const gameTitle = document.getElementById('gameTitle');
+const gameTotalStars = document.getElementById('gameTotalStars');
+
+function startGame(id){
+  gId = id;
+  resetGameState();
+  stopTimer();
+  gameOverlay.hidden = false;
+  gameOverlay.classList.remove('closing');
+  renderGameIntro();
+}
+
+function resetGameState(){
+  gIndex = 0; gScore = 0; gStreak = 0; gMaxStreak = 0;
+  gComodin50 = 1; gComodinPista = 1; gAnswered = false;
+}
+
+function renderGameIntro(){
+  stopTimer();
+  const g = GAMES[gId];
+  if(!g){ closeGame(); return; }
+
+  gameTitle.innerHTML = g.title + ' <small>Como jugar</small>';
+  gameTotalStars.textContent = totalStars;
+
+  gameBody.innerHTML =
+    '<section class="game-intro" aria-labelledby="gameIntroTitle">' +
+      '<div class="game-intro-hero">' +
+        '<div class="game-icon" aria-hidden="true">' + g.short + '</div>' +
+        '<div>' +
+          '<h2 id="gameIntroTitle">' + g.title + '</h2>' +
+          '<p>' + g.desc + '</p>' +
+        '</div>' +
+      '</div>' +
+      '<h3>Que va a aprender</h3>' +
+      '<p class="game-intro-learn">' + g.learn + '</p>' +
+      '<h3>Como se juega</h3>' +
+      '<ol class="game-intro-steps">' + g.steps.map(s=>'<li>' + s + '</li>').join('') + '</ol>' +
+      '<h3>Caracteristicas</h3>' +
+      '<div class="game-intro-features">' +
+        g.features.map(f=>'<span class="game-intro-feature"><span class="dot"></span>' + f + '</span>').join('') +
+      '</div>' +
+      '<p class="game-intro-note">El tiempo de cada pregunta empieza cuando toque <b>Empezar ahora</b>. Tomese unos segundos para leer con calma.</p>' +
+      '<div class="game-intro-actions">' +
+        '<button class="game-btn-primary" id="gameIntroStart" type="button">Empezar ahora</button>' +
+        '<button class="game-btn-secondary" id="gameIntroBack" type="button">Volver a juegos</button>' +
+      '</div>' +
+    '</section>';
+
+  const startBtn = document.getElementById('gameIntroStart');
+  startBtn.addEventListener('click', addRipple);
+  startBtn.addEventListener('click', ()=>{
+    sndClick();
+    resetGameState();
+    renderQuestion();
+  });
+
+  const backBtn = document.getElementById('gameIntroBack');
+  backBtn.addEventListener('click', addRipple);
+  backBtn.addEventListener('click', ()=>{
+    sndClick();
+    closeGame();
+    currentGameInstr = null;
+    renderGames();
+  });
+
+  startBtn.focus({preventScroll:true});
+}
+
+function closeGame(){
+  stopTimer();
+  gameOverlay.classList.add('closing');
+  setTimeout(()=>{
+    gameOverlay.hidden = true;
+    gameOverlay.classList.remove('closing');
+  }, 250);
+}
+document.getElementById('gameBack').addEventListener('click', closeGame);
+
+function renderQuestion(){
+  stopTimer();
+  const g = GAMES[gId];
+  const item = g.items[gIndex];
+  const total = g.items.length;
+  gAnswered = false;
+
+  gameTitle.innerHTML = g.title + ' <small>Pregunta ' + (gIndex+1) + ' de ' + total + '</small>';
+  gameTotalStars.textContent = totalStars;
+
+  const optsList = item.o || g.options;
+  const pct = (gIndex / total) * 100;
+
+  gameBody.innerHTML =
+    '<div class="game-q-head">' +
+      '<span class="game-q-progress">' + (gIndex+1) + ' / ' + total + '</span>' +
+      '<span class="game-q-cat">' + g.title + '</span>' +
+      '<div class="game-timer" id="gameTimer"><span class="clock"></span><span id="timerVal">20</span>s</div>' +
+    '</div>' +
+    '<div class="game-q-bar"><div class="game-q-bar-fill" style="width:' + pct + '%"></div></div>' +
+    '<div class="game-stats">' +
+      '<span class="stat-pill" id="statScore"><span class="lbl">Aciertos</span> <span class="val">' + gScore + '</span></span>' +
+      '<span class="stat-pill streak" id="statStreak"><span class="lbl">Racha</span> <span class="val">' + gStreak + '</span></span>' +
+    '</div>' +
+    '<div class="comodines">' +
+      '<button class="comodin" id="btn50" type="button">50/50 <span class="count">' + gComodin50 + '</span></button>' +
+      '<button class="comodin" id="btnPista" type="button">Pista <span class="count">' + gComodinPista + '</span></button>' +
+    '</div>' +
+    '<div class="game-question">' + item.q + '</div>' +
+    '<div class="game-options" id="gameOptions"></div>' +
+    '<div id="gameFeedbackWrap"></div>';
+
+  const optsWrap = document.getElementById('gameOptions');
+  optsList.forEach((label, k)=>{
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'game-opt';
+    b.style.animationDelay = (k * 55) + 'ms';
+    b.innerHTML = '<span class="game-opt-mark"></span><span>' + label + '</span>';
+    b.addEventListener('click', addRipple);
+    b.addEventListener('click', ()=>answerGame(k, b));
+    optsWrap.appendChild(b);
+  });
+
+  document.getElementById('btn50').disabled = gComodin50 === 0;
+  document.getElementById('btnPista').disabled = gComodinPista === 0;
+  document.getElementById('btn50').addEventListener('click', useFifty);
+  document.getElementById('btnPista').addEventListener('click', useHint);
+
+  startTimer();
+}
+
+function startTimer(){
+  gTimeLeft = 20;
+  const el = document.getElementById('gameTimer');
+  const val = document.getElementById('timerVal');
+  if(!el || !val) return;
+  el.classList.remove('warn');
+  val.textContent = gTimeLeft;
+  gTimer = setInterval(()=>{
+    gTimeLeft--;
+    val.textContent = gTimeLeft;
+    if(gTimeLeft <= 5) el.classList.add('warn');
+    if(gTimeLeft <= 0){
+      stopTimer();
+      if(!gAnswered) answerGame(-1, null);
+    }
+  }, 1000);
+}
+function stopTimer(){
+  if(gTimer){ clearInterval(gTimer); gTimer = null; }
+}
+
+function useFifty(){
+  if(gComodin50 <= 0 || gAnswered) return;
+  const g = GAMES[gId];
+  const item = g.items[gIndex];
+  const optsList = item.o || g.options;
+  const wrongIdx = [];
+  optsList.forEach((_, i)=>{ if(i !== item.c) wrongIdx.push(i); });
+  const toRemove = wrongIdx.sort(()=>Math.random()-0.5).slice(0, Math.max(1, Math.floor(wrongIdx.length/2)));
+  const buttons = document.querySelectorAll('#gameOptions .game-opt');
+  toRemove.forEach(i=>{ if(buttons[i]){ buttons[i].classList.add('dimmed'); buttons[i].disabled = true; } });
+  gComodin50 = 0;
+  document.getElementById('btn50').disabled = true;
+  document.querySelector('#btn50 .count').textContent = '0';
+  sndClick();
+}
+
+function useHint(){
+  if(gComodinPista <= 0 || gAnswered) return;
+  const g = GAMES[gId];
+  const item = g.items[gIndex];
+  const fb = document.getElementById('gameFeedbackWrap');
+  const div = document.createElement('div');
+  div.className = 'game-feedback';
+  div.innerHTML = '<b>Pista:</b> ' + item.e;
+  fb.appendChild(div);
+  gComodinPista = 0;
+  document.getElementById('btnPista').disabled = true;
+  document.querySelector('#btnPista .count').textContent = '0';
+  sndClick();
+}
+
+function answerGame(chosen, btn){
+  if(gAnswered) return;
+  gAnswered = true;
+  stopTimer();
+  const g = GAMES[gId];
+  const item = g.items[gIndex];
+  const correct = chosen === item.c;
+
+  const btns = document.querySelectorAll('#gameOptions .game-opt');
+  btns.forEach((b, idx)=>{
+    b.disabled = true;
+    const mark = b.querySelector('.game-opt-mark');
+    if(idx === item.c){ b.classList.add('correct'); mark.textContent = 'v'; }
+    else if(idx === chosen && !correct){ b.classList.add('wrong'); mark.textContent = 'x'; }
+  });
+
+  if(correct){
+    gScore++; gStreak++;
+    if(gStreak > gMaxStreak) gMaxStreak = gStreak;
+    sndCorrect(); vibrate(50);
+    const rect = btn ? btn.getBoundingClientRect() : {left:window.innerWidth/2, top:window.innerHeight/2, width:0, height:0};
+    const cx = rect.left + rect.width/2;
+    const cy = rect.top + rect.height/2;
+    floatPlus('+1', cx, cy);
+    if(gStreak >= 2) floatPlus('x' + gStreak, cx + 60, cy - 20);
+    flyStar(cx + 30, cy);
+    const ss = document.getElementById('statScore');
+    const sr = document.getElementById('statStreak');
+    if(ss){ ss.classList.add('bump'); ss.querySelector('.val').textContent = gScore; }
+    if(sr){ sr.classList.add('bump'); sr.querySelector('.val').textContent = gStreak; }
+    setTimeout(()=>{ if(ss) ss.classList.remove('bump'); if(sr) sr.classList.remove('bump'); }, 600);
+    if(gStreak >= 3 && gStreak % 3 === 0) launchConfetti();
+  } else {
+    gStreak = 0;
+    sndWrong(); vibrate([40,40,40]);
+    const sr = document.getElementById('statStreak');
+    if(sr){ sr.classList.add('bump'); sr.querySelector('.val').textContent = '0'; setTimeout(()=>sr.classList.remove('bump'), 600); }
+  }
+
+  const fb = document.createElement('div');
+  fb.className = 'game-feedback' + (correct ? '' : ' wrong');
+  fb.innerHTML = '<b>' + (correct ? 'Correcto!' : 'Casi...') + '</b> ' + item.e;
+  document.getElementById('gameFeedbackWrap').appendChild(fb);
+
+  const isLast = gIndex === g.items.length - 1;
+  const next = document.createElement('button');
+  next.type = 'button';
+  next.className = 'game-next';
+  next.textContent = isLast ? 'Ver resultado' : 'Siguiente';
+  next.addEventListener('click', addRipple);
+  next.addEventListener('click', ()=>{
+    sndClick();
+    if(isLast){ finishGame(); }
+    else { gIndex++; renderQuestion(); }
+  });
+  document.getElementById('gameFeedbackWrap').appendChild(next);
+}
+
+function finishGame(){
+  stopTimer();
+  const g = GAMES[gId];
+  const total = g.items.length;
+  const ratio = gScore / total;
+  const stars = ratio >= 0.9 ? 3 : ratio >= 0.6 ? 2 : 1;
+
+  const prev = bestScores[gId];
+  if(typeof prev !== 'number' || gScore > prev) bestScores[gId] = gScore;
+  totalStars += stars;
+  saveState();
+  gameTotalStars.textContent = totalStars;
+
+  let title, msg, badge;
+  if(ratio >= 0.9){ title='Excelente!'; msg='Domina este tema. Comparta lo aprendido con su familia.'; badge='3'; launchConfetti(); sndWin(); }
+  else if(ratio >= 0.6){ title='Muy bien!'; msg='Va por buen camino. Repita para reforzar.'; badge='2'; sndCorrect(); }
+  else { title='Buen intento!'; msg='La practica hace al maestro. Vuelva a intentarlo.'; badge='1'; sndWrong(); }
+
+  let starsHTML = '<div class="stars-big">';
+  for(let i=0;i<3;i++) starsHTML += '<span class="star-big' + (i<stars?' filled':'') + '"></span>';
+  starsHTML += '</div>';
+
+  gameBody.innerHTML =
+    '<div class="game-results">' +
+      '<div class="game-results-badge">' + badge + '</div>' +
+      '<h3>' + title + '</h3>' +
+      '<p class="game-results-score">Acerto <b>' + gScore + '</b> de ' + total + '</p>' +
+      '<p class="game-results-score">Racha maxima: <b>' + gMaxStreak + '</b></p>' +
+      starsHTML +
+      '<p class="game-results-msg">' + msg + '</p>' +
+      '<div class="game-results-actions">' +
+        '<button class="game-btn-primary" id="playAgain" type="button">Jugar otra vez</button>' +
+        '<button class="game-btn-secondary" id="chooseAnother" type="button">Volver a juegos</button>' +
+      '</div>' +
+    '</div>';
+
+  document.getElementById('playAgain').addEventListener('click', addRipple);
+  document.getElementById('playAgain').addEventListener('click', ()=>{ sndClick(); startGame(gId); });
+  document.getElementById('chooseAnother').addEventListener('click', addRipple);
+  document.getElementById('chooseAnother').addEventListener('click', ()=>{ sndClick(); closeGame(); currentGameInstr=null; renderGames(); });
+}
+
+/* ============================================================
+   CHAT (logica existente simplificada)
+   ============================================================ */
+const chatMessages = document.getElementById('chat-messages');
+const chatOptions = document.getElementById('chat-options');
+
+const EMERG = '<div class="warn"><b>Si es una emergencia:</b> Bomberos Voluntarios <b>122</b>, Bomberos Municipales <b>123</b>, Cruz Roja <b>125</b>.</div>';
+
+const N = {
+inicio:{m:['<p>Hola. Soy <b>Azucena</b>, su asistente de farmacia.</p><p>Toque un boton o escriba su pregunta.</p>'],o:'MENU'},
+menu:{m:['<p>De que quiere platicar?</p>'],o:'MENU'},
+diabetes:{m:['<p><b>Que es la diabetes tipo 2?</b></p><p>Cuando comemos, la comida se convierte en azucar (glucosa). La <b>insulina</b> es una llave que abre la puerta de las celulas para que el azucar entre y nos de energia.</p>',
+  '<div class="tip">La diabetes <b>no se cura</b>, pero <b>si se controla</b>.</div>'],
+  o:[['Por que me dio?','causa'],['Que siento si esta alta?','sintomas'],['Voy a terminar con insulina?','avanza'],['Que dano hace?','complicaciones']]},
+causa:{m:['<p><b>Por que aparece?</b></p><ul><li>Familiares con diabetes.</li><li>Sobrepeso, grasa en la panza.</li><li>Poca actividad fisica.</li><li>Comidas y bebidas con mucha azucar.</li><li>La edad.</li></ul>'],
+  o:[['Senales de azucar alta','sintomas'],['Alimentacion','comida']]},
+sintomas:{m:['<p><b>Senales de azucar alta:</b></p><ul><li>Mucha sed y boca seca.</li><li>Orinar seguido.</li><li>Cansancio.</li><li>Vista borrosa.</li><li>Heridas que tardan en sanar.</li></ul>',
+  '<div class="warn">Busque atencion <b>hoy mismo</b> si el azucar pasa de <b>300 mg/dL</b> varias veces.</div>'],
+  o:[['Mis metas','metas'],['Azucar baja','hipo']]},
+avanza:{m:['<p>Con los anos la diabetes tipo 2 <b>puede avanzar</b>. Muchas personas, aunque se cuiden, llegan a necesitar insulina.</p>',
+  '<div class="tip"><b>Usar insulina no es un castigo.</b></div>'],
+  o:[['Como usar la insulina','insulina']]},
+complicaciones:{m:['<p>El azucar alta por mucho tiempo dana los vasos sanguineos. Afecta:</p><ul><li>Corazon y cerebro.</li><li>Rinones.</li><li>Ojos.</li><li>Nervios y pies.</li><li>Dientes y encias.</li></ul>'],
+  o:[['Rinones, higado y presion','organos'],['Cuidado de los pies','pies']]},
+metas:{m:['<p><b>Mis metas de control:</b></p><ul><li>Azucar en ayunas: 80 a 130 mg/dL.</li><li>Despues de comer: menos de 180 mg/dL.</li><li>HbA1c: menos de 7 por ciento.</li><li>Presion: menos de 130/80.</li></ul>'],
+  o:[['Que es la HbA1c?','hba1c'],['Examenes','examenes'],['Como medirme','glucometro']]},
+hba1c:{m:['<p>La <b>HbA1c</b> muestra el promedio de azucar de los ultimos 2 a 3 meses. Se hace cada 3 a 6 meses.</p>'],
+  o:[['Mis metas','metas'],['Examenes','examenes']]},
+examenes:{m:['<p><b>Examenes que no deben faltar:</b></p><ul><li>HbA1c: cada 3 a 6 meses.</li><li>Presion: en cada consulta.</li><li>Rinones: al menos 1 vez al ano.</li><li>Colesterol: 1 vez al ano.</li><li>Ojos: 1 vez al ano.</li><li>Revision de pies: en cada consulta.</li></ul>'],
+  o:[['Rinones, higado y presion','organos']]},
+glucometro:{m:['<p><b>Como medirme:</b></p><ul><li>Lavese las manos y seque.</li><li>Pinche el costado de la yema.</li><li>Ponga la gota en la tira.</li><li>Anote el numero y la hora.</li></ul>'],
+  o:[['Mis metas','metas'],['Azucar baja','hipo']]},
+meds:{m:['<p>De cual medicamento quiere saber?</p>'],
+  o:[['Metformina','metformina'],['Semaglutida inyectable','semainy'],['Semaglutida pastilla','semaoral'],['Empagliflozina','sglt2'],['Glibenclamida','sulfo'],['Insulina','insulina'],['Para no olvidar','adherencia']]},
+metformina:{m:['<p><b>Metformina</b></p><p>Con las comidas, todos los dias. Si es XR, traguela entera. No tome doble si se le olvido.</p>',
+  '<div class="warn">Si tiene vomitos o diarrea fuerte, avise a su medico.</div>'],
+  o:[['Dias de enfermedad','enfermo'],['Otro medicamento','meds']]},
+semainy:{m:['<p><b>Semaglutida inyectable (Ozempic)</b></p><ul><li>1 vez por semana, mismo dia.</li><li>Si se le olvido: apliquela si no han pasado 5 dias.</li></ul>'],
+  o:[['Azucar baja','hipo'],['Otro medicamento','meds']]},
+semaoral:{m:['<p><b>Semaglutida en pastilla (Rybelsus)</b></p><ul><li>En ayunas, al levantarse.</li><li>Con un sorbo de agua.</li><li>Esperar 30 minutos para comer.</li></ul>'],
+  o:[['Semaglutida inyectable','semainy'],['Otro medicamento','meds']]},
+sglt2:{m:['<p><b>Empagliflozina y dapagliflozina</b></p><p>Sacan el azucar por la orina. Protegen corazon y rinones. Tome agua.</p>'],
+  o:[['Dias de enfermedad','enfermo'],['Otro medicamento','meds']]},
+sulfo:{m:['<p><b>Glibenclamida y glimepirida</b></p><p>Bajan bien el azucar pero pueden bajarla demasiado. No se salte comidas.</p>'],
+  o:[['Azucar baja','hipo'],['Otro medicamento','meds']]},
+insulina:{m:['<p><b>Insulina</b></p><p>Basal (glargina): una vez al dia. Rapida: antes de comer. Refrigeradora, nunca congelador.</p>'],
+  o:[['Azucar baja','hipo'],['Otro medicamento','meds']]},
+adherencia:{m:['<p><b>Trucos:</b> pastillero con dias, alarma, unirlo al desayuno, pedir ayuda a un familiar.</p>'],
+  o:[['Varios medicamentos','polifarmacia'],['Otro medicamento','meds']]},
+hipo:{m:['<p><b>Azucar baja:</b> menos de 70 mg/dL.</p><p>Temblor, sudor frio, corazon acelerado, mareo, confusion.</p>',
+  '<p><b>Regla del 15:</b> 15 g de azucar rapida, esperar 15 minutos, medir, repetir si sigue bajo.</p>',
+  '<div class="warn">Si esta desmayado, no le de nada por la boca. Llame a emergencias.</div>'+EMERG],
+  o:[['Como prevenirla?','hipoprev'],['Insulina','insulina']]},
+hipoprev:{m:['<p>No se salte comidas. Lleve un dulce o jugo. Avisele a su medico si tuvo varios bajones.</p>'],
+  o:[['Ejercicio y pies','pies']]},
+organos:{m:['<p>Sobre cual quiere saber?</p>'],
+  o:[['Rinones','rinon'],['Higado','higado'],['Presion','presion']]},
+rinon:{m:['<p><b>Rinones:</b> se revisan con orina y sangre al menos 1 vez al ano. Evite ibuprofeno/diclofenaco sin receta.</p>'],
+  o:[['Presion','presion'],['Varios medicamentos','polifarmacia']]},
+higado:{m:['<p><b>Higado graso:</b> baje un poco de peso, evite alcohol, cuidado con productos "naturales".</p>'],
+  o:[['Alimentacion','comida']]},
+presion:{m:['<p><b>Presion:</b> meta menos de 130/80. Tome sus pastillas diario. Use menos sal.</p>'],
+  o:[['Rinones','rinon'],['Mis metas','metas']]},
+polifarmacia:{m:['<p>Tenga una lista de todas sus medicinas. Llevelas todas a la consulta. Incluya vitaminas y tes.</p>'],
+  o:[['Para no olvidar','adherencia'],['Rinones','rinon']]},
+comida:{m:['<p><b>Metodo del plato:</b></p><ul><li>Mitad: verduras.</li><li>Un cuarto: proteina.</li><li>Un cuarto: carbohidratos.</li></ul>',
+  '<p>Para tomar: <b>agua pura</b>. Evite gaseosas y jugos de caja.</p>'],
+  o:[['Ejercicio y pies','pies'],['Higado','higado']]},
+pies:{m:['<p><b>Movimiento:</b> 150 minutos a la semana. Caminar cuenta.</p>',
+  '<p><b>Cuidado de pies:</b> reviselos todos los dias, seque entre los dedos, no camine descalzo.</p>'],
+  o:[['Azucar baja','hipo'],['Alimentacion','comida']]},
+enfermo:{m:['<p><b>Cuando se enferma:</b></p><ul><li>No deje la insulina por su cuenta.</li><li>Midase mas seguido.</li><li>Tome liquidos a sorbitos.</li></ul>',
+  '<div class="warn">Algunas medicinas pueden necesitar pausa: metformina, empagliflozina, losartan.</div>'+EMERG],
+  o:[['Metformina','metformina'],['Empagliflozina','sglt2']]},
+emocion:{m:['<p>Es normal sentirse cansado, frustrado o con miedo. Cuenteselo a su medico o farmaceutico. Pida apoyo a su familia.</p>'],
+  o:[['Menu principal','menu']]},
+sos:{m:['<p><b>Emergencia:</b></p><ul><li>Desmayado o no puede tragar.</li><li>Azucar baja que no sube.</li><li>Azucar arriba de 300 con vomitos.</li><li>Dolor de pecho o se le tuerce la boca.</li></ul>'+EMERG],
+  o:[['Azucar baja','hipo'],['Menu principal','menu']]},
+diagnostico:{m:['<p><b>Diagnostico:</b></p><ul><li>Glucosa en ayunas: 126 mg/dL o mas.</li><li>HbA1c: 6.5 por ciento o mas.</li><li>Curva: 200 mg/dL o mas.</li></ul>'],
+  o:[['Por que me dio?','causa'],['Mis metas','metas']]}
+};
+
+const MENU = [['Que es la diabetes?','diabetes'],['Mis metas','metas'],['Mis medicamentos','meds'],['Azucar baja','hipo'],
+  ['Rinones, higado y presion','organos'],['Varios medicamentos','polifarmacia'],['Alimentacion','comida'],
+  ['Ejercicio y pies','pies'],['Dias de enfermedad','enfermo'],['Cansado(a)','emocion']];
+
+function chatBubble(html, who){
+  const b = document.createElement('div');
+  b.className = 'msg ' + who;
+  b.innerHTML = html;
+  chatMessages.appendChild(b);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+  return b;
+}
+
+function setChatOptions(list){
+  chatOptions.innerHTML = '';
+  list.forEach(([label, target], idx)=>{
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'opt';
+    b.textContent = label;
+    b.addEventListener('click', addRipple);
+    b.addEventListener('click', ()=>{
+      initAudio(); sndClick();
+      chatBubble(label.replace(/</g,'&lt;'),'me');
+      if(typeof target === 'function'){ target(); }
+      else { chatShow(target); }
+    });
+    chatOptions.appendChild(b);
+  });
+  if(list !== MENU){
+    const h = document.createElement('button');
+    h.type = 'button';
+    h.className = 'opt home';
+    h.textContent = 'Menu principal';
+    h.addEventListener('click', ()=>{ chatBubble('Menu principal','me'); chatShow('menu'); });
+    chatOptions.appendChild(h);
+  }
+}
+
+async function chatSay(msgs){
+  chatOptions.innerHTML = '';
+  for(const m of msgs){
+    const t = chatBubble('Azucena esta escribiendo','bot typing');
+    await wait(450);
+    t.remove();
+    chatBubble(m,'bot');
+    await wait(120);
+  }
+}
+
+async function chatShow(id){
+  const n = N[id];
+  if(!n) return chatShow('menu');
+  await chatSay(n.m);
+  setChatOptions(n.o === 'MENU' ? MENU : n.o);
+}
+
+async function renderChatWelcome(){
+  chatMessages.innerHTML = '';
+  chatOptions.innerHTML = '';
+  await chatSay(N.inicio.m);
+  setChatOptions(MENU);
+}
+
+function chatShowSOS(){
+  chatMessages.innerHTML = '';
+  chatShow('sos');
+}
+
+const KEYS = [
+  [/diagn|prediab|curva/,'diagnostico'],[/metform|glucophag/,'metformina'],
+  [/rybelsus|pastilla.*semaglu/,'semaoral'],[/semaglu|ozempic|glp/,'semainy'],
+  [/empagli|dapagli|jardiance|forxiga|flozina/,'sglt2'],[/glibencl|glimepir|daonil|amaryl/,'sulfo'],
+  [/insulin|pluma|glargin|lantus|nph/,'insulina'],[/baja|hipogluc|tembl|sudor|mare|regla del 15/,'hipo'],
+  [/alta|hipergluc|sed|orin/,'sintomas'],[/rinon|creatin|albumin/,'rinon'],[/higado|graso/,'higado'],
+  [/presion|hipertens|losart|enalap/,'presion'],[/natural|hierba|canela|ibupro|diclof|polifarm|varias/,'polifarmacia'],
+  [/olvid|recordar|pastiller|alarma/,'adherencia'],[/comid|comer|dieta|tortill|fruta|plato|aliment|bebida|gaseosa/,'comida'],
+  [/pie|ejercic|camin|deport/,'pies'],[/enferm|gripe|vomit|diarre|fiebre/,'enfermo'],
+  [/meta|hba1c|hemoglob|glicos/,'metas'],[/examen|laborat/,'examenes'],[/glucometro|medir|medirme/,'glucometro'],
+  [/causa|por que me dio|hered/,'causa'],[/que es la diabet|diabetes/,'diabetes'],[/triste|cansad|miedo|deprim|estres/,'emocion'],
+  [/emergen|urgen|desmay/,'sos'],[/hola|buen|menu|inicio/,'menu']
+];
+
+function routeText(text){
+  const raw = text.toLowerCase();
+  const norm = raw.normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  for(const [re,id] of KEYS){
+    if(re.test(raw) || re.test(norm)) return id;
+  }
+  return null;
+}
+
+document.getElementById('chat-form').addEventListener('submit', e=>{
+  e.preventDefault();
+  initAudio(); sndClick();
+  const i = document.getElementById('txt');
+  const v = i.value.trim();
+  if(!v) return;
+  i.value = '';
+  chatBubble(v.replace(/</g,'&lt;').replace(/>/g,'&gt;'), 'me');
+  const id = routeText(v);
+  if(id) chatShow(id);
+  else {
+    chatSay(['<p>Disculpe, no entendi. Pruebe con una palabra: <b>insulina</b>, <b>azucar baja</b>, <b>rinon</b>.</p>'])
+      .then(()=>setChatOptions(MENU));
+  }
+});
+
+/* ============ BOTONES GLOBALES ============ */
+document.getElementById('bigger').addEventListener('click', ()=>{
+  fs = Math.min(24, fs + 1);
+  document.documentElement.style.setProperty('--fs', fs+'px');
+  try{ localStorage.setItem('azu-fs', fs); }catch(e){}
+});
+document.getElementById('smaller').addEventListener('click', ()=>{
+  fs = Math.max(14, fs - 1);
+  document.documentElement.style.setProperty('--fs', fs+'px');
+  try{ localStorage.setItem('azu-fs', fs); }catch(e){}
+});
+document.getElementById('sound').addEventListener('click', e=>{
+  initAudio();
+  soundOn = !soundOn;
+  e.currentTarget.setAttribute('aria-pressed', soundOn);
+  e.currentTarget.textContent = soundOn ? 'Sonido' : 'Silencio';
+  if(soundOn) tone(660,0.1);
+});
+document.getElementById('sos').addEventListener('click', ()=>{
+  initAudio(); switchTab('chat'); chatShowSOS();
+});
+
+document.addEventListener('click', initAudio, { once:true });
+
+/* Init */
+renderHome();
+</script>
+</body>
+</html>
