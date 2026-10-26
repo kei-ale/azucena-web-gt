@@ -1,6 +1,6 @@
 # Azucena 🩺
 
-**Sitio web educativo sobre diabetes tipo 2**, pensado para personas adultas mayores (50+). Explica la enfermedad, los medicamentos, el uso del glucómetro y las emergencias con palabras sencillas, cápsulas cortas, juegos y un chat guiado.
+**Sitio web educativo sobre diabetes tipo 2**, pensado para personas adultas mayores (50+). Explica la enfermedad, los medicamentos, el uso del glucómetro y las emergencias con palabras sencillas, cápsulas cortas, juegos y un chat con IA embebido.
 
 Es un proyecto **autocontenido**: todo el HTML, CSS y JavaScript vive en un solo archivo (`index.html`), sin frameworks, sin build step y sin backend.
 
@@ -13,7 +13,7 @@ Es un proyecto **autocontenido**: todo el HTML, CSS y JavaScript vive en un solo
 - [Secciones del sitio](#secciones-del-sitio)
 - [Cápsulas educativas](#cápsulas-educativas)
 - [Juegos](#juegos)
-- [Chat educativo](#chat-educativo)
+- [Chat embebido](#chat-embebido)
 - [Infografías y video](#infografías-y-video)
 - [Estructura del proyecto](#estructura-del-proyecto)
 - [Cómo ejecutarlo](#cómo-ejecutarlo)
@@ -30,7 +30,7 @@ Es un proyecto **autocontenido**: todo el HTML, CSS y JavaScript vive en un solo
 
 Abra `index.html` en cualquier navegador moderno (Chrome, Edge, Firefox o Safari). No requiere instalación ni servidor.
 
-> Las tipografías se cargan desde Google Fonts. Sin conexión, el sitio sigue funcionando con las fuentes del sistema.
+> Las tipografías se cargan desde Google Fonts. Sin conexión, el sitio sigue funcionando con las fuentes del sistema; solo el chat embebido necesita internet.
 
 ---
 
@@ -39,14 +39,14 @@ Abra `index.html` en cualquier navegador moderno (Chrome, Edge, Firefox o Safari
 - **4 secciones navegables:** Inicio, Aprender, Juegos y Chat.
 - **10 cápsulas educativas** con contenido, consejos y advertencias.
 - **4 juegos** con instrucciones, temporizador, comodines y estrellas.
-- **Chat por temas** con más de 30 respuestas y búsqueda por palabras clave.
-- **Botón SOS** siempre visible, con números de emergencia.
+- **Chat con IA embebido** de [EDCafe](https://app.edcafe.ai) (iframe), sin backend propio.
+- **Botón SOS** siempre visible, con números de emergencia en un aviso emergente.
 - **Progreso guardado** en el navegador (cápsulas vistas, estrellas y mejores puntajes).
 - **Tamaño de letra ajustable** (14 px a 24 px) que se recuerda entre visitas.
 - **Sonido activable/desactivable**, generado con Web Audio API (sin archivos de audio).
 - **Vibración** en móvil al responder.
 - **Diseño responsive** y respeto por `prefers-reduced-motion`.
-- **Sin dependencias externas** salvo Google Fonts.
+- **Sin dependencias externas** salvo Google Fonts y el iframe del chat.
 
 ---
 
@@ -57,7 +57,7 @@ Abra `index.html` en cualquier navegador moderno (Chrome, Edge, Firefox o Safari
 | **Inicio** | Bienvenida, estadísticas de progreso, acceso a la siguiente cápsula, juegos y chat. |
 | **Aprender** | Listado de las 10 cápsulas y vista de detalle con infografía, contenido y acciones. |
 | **Juegos** | Los 4 juegos con pantalla de instrucciones antes de empezar. |
-| **Chat** | Asistente "Azucena" con menú de temas, burbujas de conversación y búsqueda libre. |
+| **Chat** | Asistente "Azucena" embebido desde EDCafe (iframe), con reconocimiento de voz. |
 
 ---
 
@@ -93,13 +93,18 @@ Cada partida incluye temporizador de 20 segundos, comodín **50/50**, comodín *
 
 ---
 
-## Chat educativo
+## Chat embebido
 
-El chat funciona **sin servidor ni IA externa**. Las respuestas están escritas en el propio código y se navegan con botones o escribiendo palabras clave.
+La pestaña **Chat** muestra un chatbot alojado en **EDCafe** mediante un `iframe`. El sitio no guarda ni procesa las conversaciones: todo ocurre en el servicio externo.
 
-Temas principales: qué es la diabetes, metas, HbA1c, exámenes, glucómetro, medicamentos (metformina, semaglutida, empagliflozina, glibenclamida, insulina), hipoglucemia, riñones, hígado, presión, alimentación, ejercicio, pies, días de enfermedad y apoyo emocional.
+- Requiere **conexión a internet**.
+- El atributo `allow="microphone"` habilita la conversación por voz si el navegador y el servicio lo permiten.
+- El `iframe` usa `loading="lazy"`, así que solo se carga cuando la persona entra a la pestaña.
+- Debajo se mantiene el aviso legal: la información es educativa y **no reemplaza** la consulta médica.
 
-Incluye un aviso legal visible: la información es educativa y **no reemplaza** la consulta médica.
+El botón **SOS** (arriba y en Inicio) abre un aviso con las señales de alarma y los números de emergencia, sin depender del chat.
+
+> Los iframes de terceros pueden requerir que la página se sirva por `http://` o `https://`; si el chat no carga abriendo `index.html` con doble clic, use un servidor local o publíquelo (por ejemplo, GitHub Pages).
 
 ---
 
@@ -199,8 +204,8 @@ Todo se edita dentro del `<script>` de `index.html`.
 | Pie de foto de cada infografía | campo `infographic:{caption:'...'}` |
 | Video de "Mis medicamentos" | comentario `AGREGA AQUI LA URL DEL VIDEO` |
 | Juegos (preguntas, respuestas, explicaciones) | `const GAMES = {` |
-| Temas y respuestas del chat | `const N = {` y `const MENU` |
-| Números de emergencia | `const EMERG` |
+| Temas y respuestas del chat | Ahora vive en EDCafe; para cambiar el bot, edite el `src` del `iframe` de `#tab-chat` |
+| Números de emergencia | `#sosOverlay` (HTML) |
 | Colores y tipografías | variables CSS en `:root` |
 | Límites de tamaño de letra | funciones de los botones `A+` / `A-` (`Math.min(24, …)` y `Math.max(14, …)`) |
 
@@ -229,6 +234,7 @@ Si además crea `Mi capsula.jpeg` en la carpeta, la infografía aparecerá sola.
 - **Web Audio API** para los sonidos de acierto, error, clic y victoria.
 - **Vibration API** para respuesta háptica en móvil.
 - **localStorage** para guardar el progreso.
+- **iframe de EDCafe** para el chat con IA (servicio externo).
 - **Sin** frameworks, bundlers, backend ni base de datos.
 
 ---
