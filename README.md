@@ -130,19 +130,29 @@ Mis medicamentos.jpeg
 
 ### Videos
 
-La sección **Videos** está habilitada únicamente en la cápsula **Mis medicamentos**. Muestra dos videos verticales de **TikTok** uno debajo del otro, en marcos 9:16 (325 × 740 px), cada uno con un enlace para abrirlo en la app.
+La sección **Videos** está habilitada en dos cápsulas, cada una con su propia lista:
+
+- **Qué es la diabetes tipo 2** → video de `@marianataliaramir0` sobre comprender el tratamiento.
+- **Mis medicamentos** → video de `@mariateresa.af` sobre seguridad en el tratamiento.
+
+Cada video se muestra en un marco 9:16 (325 × 740 px) con un enlace debajo para abrirlo en la app.
 
 ```js
+// capsula "que-es"
+videos:[
+  {
+    url:'https://www.tiktok.com/embed/v2/7700789644249632021',
+    link:'https://vt.tiktok.com/ZSgCSDwPU/',
+    title:'Video: Comprende tu tratamiento - que sucede realmente en la diabetes'
+  }
+],
+
+// capsula "medicamentos"
 videos:[
   {
     url:'https://www.tiktok.com/embed/v2/7700788208782626055',
     link:'https://vt.tiktok.com/ZSgCB5rf9/',
     title:'Video: Seguridad en el tratamiento para la diabetes'
-  },
-  {
-    url:'https://www.tiktok.com/embed/v2/7700789644249632021',
-    link:'https://vt.tiktok.com/ZSgCSDwPU/',
-    title:'Video: Comprende tu tratamiento - que sucede realmente en la diabetes'
   }
 ],
 ```
@@ -213,7 +223,7 @@ Todo se edita dentro del `<script>` de `index.html`.
 |---|---|
 | Cápsulas (título, resumen, contenido, juego relacionado) | `const CAPSULES = [` |
 | Pie de foto de cada infografía | campo `infographic:{caption:'...'}` |
-| Video de "Mis medicamentos" | comentario `AGREGA AQUI LA URL DEL VIDEO` |
+| Videos de las cápsulas | campo `videos:[ ... ]` dentro de cada cápsula (hoy en `que-es` y `medicamentos`) |
 | Juegos (preguntas, respuestas, explicaciones) | `const GAMES = {` |
 | Temas y respuestas del chat | Ahora vive en EDCafe; para cambiar el bot, edite el `data-src` del `iframe` `#chatFrame` en `#tab-chat` |
 | Números de emergencia | `#sosOverlay` (HTML) |
