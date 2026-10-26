@@ -99,7 +99,9 @@ La pestaña **Chat** muestra un chatbot alojado en **EDCafe** mediante un `ifram
 
 - Requiere **conexión a internet**.
 - El atributo `allow="microphone"` habilita la conversación por voz si el navegador y el servicio lo permiten.
-- El `iframe` usa `loading="lazy"`, así que solo se carga cuando la persona entra a la pestaña.
+- **Cada visita empieza una conversación nueva.** El `src` del `iframe` no está fijo en el HTML: se arma por JavaScript añadiendo un parámetro único (`?s=…`), así EDCafe no reutiliza la sesión anterior guardada en el navegador. La URL base vive en `data-src`.
+- El `iframe` se carga la primera vez que la persona abre la pestaña **Chat** (no antes), y al volver a la pestaña **no** se pierde la conversación en curso.
+- El botón **Reiniciar chat** (arriba del `iframe`) borra la conversación actual y arranca una nueva sin recargar la página.
 - Debajo se mantiene el aviso legal: la información es educativa y **no reemplaza** la consulta médica.
 
 El botón **SOS** (arriba y en Inicio) abre un aviso con las señales de alarma y los números de emergencia, sin depender del chat.
@@ -126,23 +128,32 @@ Mis medicamentos.jpeg
 
 > El nombre debe coincidir con el campo `title` de la cápsula en `CAPSULES`. Los espacios se codifican automáticamente.
 
-### Video
+### Videos
 
-La sección **Video** está habilitada únicamente en la cápsula **Mis medicamentos**. La URL aún no está definida, por lo que se muestra un recuadro de *"Video pendiente"*.
-
-Para agregarla, busque en `index.html` el comentario:
+La sección **Videos** está habilitada únicamente en la cápsula **Mis medicamentos**. Muestra dos videos verticales de **TikTok** uno debajo del otro, en marcos 9:16 (325 × 740 px), cada uno con un enlace para abrirlo en la app.
 
 ```js
-/* ============================================================
-   >>> AGREGA AQUI LA URL DEL VIDEO DE "MIS MEDICAMENTOS" <<<
-   ============================================================ */
-video:{
-  url:'', // <-- PEGA AQUI LA URL DEL VIDEO
-  title:'Video: Como tomar metformina'
-},
+videos:[
+  {
+    url:'https://www.tiktok.com/embed/v2/7700788208782626055',
+    link:'https://vt.tiktok.com/ZSgCB5rf9/',
+    title:'Video: Seguridad en el tratamiento para la diabetes'
+  },
+  {
+    url:'https://www.tiktok.com/embed/v2/7700789644249632021',
+    link:'https://vt.tiktok.com/ZSgCSDwPU/',
+    title:'Video: Comprende tu tratamiento - que sucede realmente en la diabetes'
+  }
+],
 ```
 
-Pegue un enlace normal de YouTube (`https://www.youtube.com/watch?v=...`) o uno tipo `embed`. El código convierte el enlace automáticamente.
+Reglas para cambiar o agregar videos:
+
+- Es una **lista**: agregue o quite objetos y se muestran en ese orden, uno debajo del otro. Si hay uno solo, la etiqueta dice *Video*; si hay varios, *Videos*.
+- **YouTube:** pegue el enlace normal (`https://www.youtube.com/watch?v=...`) o el `youtu.be/...`; el código arma el `embed` solo. Se muestra en marco 16:9.
+- **TikTok:** use la forma `https://www.tiktok.com/embed/v2/ID`. El `ID` son los números del enlace `.../@usuario/video/ID`. Los enlaces cortos `vt.tiktok.com/...` **no** se pueden incrustar; van en `link` para el botón.
+- Si `url` queda vacía, ese elemento se muestra como recuadro *"Video pendiente"*.
+- Los videos verticales se muestran en marco 9:16 (325 px de ancho, centrado) porque son de celular; esa medida evita las barras de desplazamiento del embed de TikTok.
 
 ---
 
@@ -204,7 +215,7 @@ Todo se edita dentro del `<script>` de `index.html`.
 | Pie de foto de cada infografía | campo `infographic:{caption:'...'}` |
 | Video de "Mis medicamentos" | comentario `AGREGA AQUI LA URL DEL VIDEO` |
 | Juegos (preguntas, respuestas, explicaciones) | `const GAMES = {` |
-| Temas y respuestas del chat | Ahora vive en EDCafe; para cambiar el bot, edite el `src` del `iframe` de `#tab-chat` |
+| Temas y respuestas del chat | Ahora vive en EDCafe; para cambiar el bot, edite el `data-src` del `iframe` `#chatFrame` en `#tab-chat` |
 | Números de emergencia | `#sosOverlay` (HTML) |
 | Colores y tipografías | variables CSS en `:root` |
 | Límites de tamaño de letra | funciones de los botones `A+` / `A-` (`Math.min(24, …)` y `Math.max(14, …)`) |

@@ -487,6 +487,37 @@ header::before{
   position:static;
 }
 
+/* Video vertical (TikTok, Reels) */
+.media-frame.portrait{
+  aspect-ratio:325 / 740;
+  max-width:325px;
+  margin-left:auto; margin-right:auto;
+  background:#000;
+  border:0;
+  border-radius:14px;
+  box-shadow:0 3px 10px rgba(6,43,32,0.18);
+}
+.media-frame.portrait iframe{background:#000; border-radius:14px}
+/* Uno o varios videos en la misma capsula */
+.media-stack{
+  display:flex; flex-direction:column; align-items:center;
+  margin:18px 0;
+}
+.media-item{
+  display:flex; flex-direction:column; align-items:center; gap:8px;
+  width:100%;
+}
+.media-item + .media-item{margin-top:28px}
+.media-item .media-frame{width:100%; margin:0}
+.media-link{
+  display:flex; align-items:center; justify-content:center; gap:6px;
+  max-width:325px;
+  font-size:.8rem; font-weight:700;
+  color:var(--em-700);
+  text-decoration:none;
+}
+.media-link:hover{text-decoration:underline}
+
 .media-label{
   display:inline-flex; align-items:center; gap:6px;
   font-size:.72rem; font-weight:700;
@@ -689,9 +720,36 @@ header::before{
 
 /* ============ CHAT EMBEBIDO (EDCafe) ============ */
 #tab-chat{padding:0}
+#tab-chat.active{display:flex; flex-direction:column; min-height:calc(100vh - 200px); min-height:calc(100dvh - 200px)}
+.chat-bar{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  flex:0 0 auto;
+  padding:10px 16px;
+  background:#fff;
+  border-bottom:1px solid var(--line);
+}
+.chat-bar-txt{font-size:.78rem; color:var(--muted)}
+.chat-reset{
+  display:inline-flex; align-items:center; gap:7px;
+  flex:none;
+  padding:8px 15px;
+  border:1.5px solid var(--em-300);
+  border-radius:999px;
+  background:var(--em-100);
+  color:var(--em-700);
+  font-family:var(--f-display); font-size:.82rem; font-weight:700;
+  cursor:pointer;
+  transition:background .2s, border-color .2s, transform .12s;
+}
+.chat-reset:hover{background:var(--em-200); border-color:var(--em-400)}
+.chat-reset:active{transform:scale(.97)}
+.chat-reset .spin{display:inline-block; font-size:1rem; line-height:1}
+.chat-reset.busy .spin{animation:chatSpin .8s linear infinite}
+@keyframes chatSpin{to{transform:rotate(360deg)}}
 .chat-embed{
-  height:calc(100vh - 230px);
-  height:calc(100dvh - 230px);
+  position:relative;
+  display:flex;
+  flex:1 1 auto;
   min-height:600px;
   padding:14px;
   background:
@@ -700,26 +758,27 @@ header::before{
     linear-gradient(180deg, #f8fdfb 0%, #eafaf3 100%);
 }
 .chat-embed iframe{
-  display:block;
-  width:100%; height:100%;
-  min-height:600px;
+  flex:1 1 auto;
+  align-self:stretch;
+  width:100%; min-width:0; height:auto;
   border:none; border-radius:16px;
   background:#fff;
   box-shadow:var(--shadow-sm);
 }
 .chat-legal{
+  flex:0 0 auto;
   font-size:.72rem; color:var(--muted);
   margin:0; padding:8px 20px 16px;
   background:#fff; text-align:center;
   border-top:1px solid var(--line);
 }
 @media (max-width:560px){
-  .chat-embed{
-    height:calc(100vh - 210px);
-    height:calc(100dvh - 210px);
-    min-height:600px;
-    padding:8px;
-  }
+  #tab-chat.active{min-height:calc(100vh - 180px); min-height:calc(100dvh - 180px)}
+  .chat-embed{min-height:600px; padding:8px}
+  .chat-embed iframe{border-radius:12px}
+  .chat-bar{padding:8px 12px}
+  .chat-bar-txt{display:none}
+  .chat-reset{padding:7px 13px; font-size:.78rem}
 }
 
 /* ============ AVISO SOS ============ */
@@ -1337,9 +1396,16 @@ header::before{
     </section>
 
     <section class="tab-panel" id="tab-chat">
+      <div class="chat-bar">
+        <span class="chat-bar-txt">Cada visita inicia una conversacion nueva</span>
+        <button class="chat-reset" id="chatReset" type="button">
+          <span class="spin" aria-hidden="true">&#8635;</span> Reiniciar chat
+        </button>
+      </div>
       <div class="chat-embed">
         <iframe
-          src="https://app.edcafe.ai/join/yxhvLObjsq7rK4xK35P8drqY8Zueg3M5m7HJ1uXPmHxHpgd2f8lnLTxXfDD9F8y7"
+          id="chatFrame"
+          data-src="https://app.edcafe.ai/join/yxhvLObjsq7rK4xK35P8drqY8Zueg3M5m7HJ1uXPmHxHpgd2f8lnLTxXfDD9F8y7"
           title="Azucena - Acompañante Diabetes Tipo 2"
           allow="microphone"
           loading="lazy"></iframe>
@@ -1468,15 +1534,27 @@ const CAPSULES = [
     summary:'Como se toman, para que sirven y que cuidar.',
     infographic:{caption:'Ejemplo de horario de medicinas'},
     /* ============================================================
-       >>> AGREGA AQUI LA URL DEL VIDEO DE "MIS MEDICAMENTOS" <<<
-       Pegue la direccion entre las comillas de url (abajo).
-       Sirve un enlace normal de YouTube o uno tipo embed.
+       >>> VIDEOS DE "MIS MEDICAMENTOS" <<<
+       Se muestran uno debajo del otro, en el orden de la lista.
+       url  = direccion que se incrusta en la pagina.
+              YouTube: enlace normal o /embed/...
+              TikTok:  https://www.tiktok.com/embed/v2/ID_DEL_VIDEO
+                       (el ID son los numeros del enlace .../video/ID)
+       link = enlace original para abrirlo en la app (opcional).
        Mientras url este vacia se muestra un recuadro de "Video pendiente".
        ============================================================ */
-    video:{
-      url:'', // <-- PEGA AQUI LA URL DEL VIDEO
-      title:'Video: Como tomar metformina'
-    },
+    videos:[
+      {
+        url:'https://www.tiktok.com/embed/v2/7700788208782626055',
+        link:'https://vt.tiktok.com/ZSgCB5rf9/',
+        title:'Video: Seguridad en el tratamiento para la diabetes'
+      },
+      {
+        url:'https://www.tiktok.com/embed/v2/7700789644249632021',
+        link:'https://vt.tiktok.com/ZSgCSDwPU/',
+        title:'Video: Comprende tu tratamiento - que sucede realmente en la diabetes'
+      }
+    ],
     sections:[
       {h:'Los mas comunes',
        list:[
@@ -1828,6 +1906,7 @@ function switchTab(name){
   if(name === 'home') renderHome();
   if(name === 'learn') renderLearn();
   if(name === 'games') renderGames();
+  if(name === 'chat') startChat();
   window.scrollTo({top:0, behavior:'smooth'});
 }
 tabs.forEach(t=>{
@@ -1972,10 +2051,11 @@ function renderCapsuleDetail(id){
     '</div>';
   }
 
-  // Video (solo aparece en las capsulas que tengan el campo video)
-  if(c.video){
-    html += '<span class="media-label video">Video</span>';
-    html += renderVideo(c.video);
+  // Videos (solo aparecen en las capsulas que tengan videos/video)
+  const videos = c.videos || (c.video ? [c.video] : []);
+  if(videos.length){
+    html += '<span class="media-label video">' + (videos.length > 1 ? 'Videos' : 'Video') + '</span>';
+    html += '<div class="media-stack">' + videos.map(renderVideo).join('') + '</div>';
   }
 
   // Contenido
@@ -2046,29 +2126,47 @@ function infographicUrl(c){
 
 function renderVideo(media){
   const title = (media && media.title) || 'Video educativo';
-  const hasUrl = media && media.url && media.url.trim();
+  const url = media && media.url ? media.url.trim() : '';
 
-  if(!hasUrl){
-    return '<div class="media-frame">' +
-      '<div class="media-pending">' +
-        '<div class="media-pending-icon">VIDEO</div>' +
-        '<strong>' + title + '</strong>' +
-        '<span>Video pendiente. Para agregarlo, busque en el codigo la capsula <code>medicamentos</code> y pegue la URL en <code>video.url</code>.</span>' +
+  if(!url){
+    return '<div class="media-item">' +
+      '<div class="media-frame">' +
+        '<div class="media-pending">' +
+          '<div class="media-pending-icon">VIDEO</div>' +
+          '<strong>' + title + '</strong>' +
+          '<span>Video pendiente. Para agregarlo, busque en el codigo la capsula <code>medicamentos</code> y pegue la URL en <code>videos</code>.</span>' +
+        '</div>' +
       '</div>' +
     '</div>';
   }
 
-  return '<div class="media-frame">' +
-    '<iframe src="' + youtubeEmbed(media.url) + '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="' + title + '"></iframe>' +
-  '</div>';
+  const isTikTok = /tiktok\.com/i.test(url);
+  const vertical = isTikTok || /instagram\.com\/(p|reel)|facebook\.com\/reel/i.test(url);
+  const link = (media.link || '').trim();
+
+  return '<div class="media-item">' +
+      '<div class="media-frame' + (vertical ? ' portrait' : '') + '">' +
+        '<iframe src="' + videoEmbed(url) + '" title="' + title + '" loading="lazy" scrolling="no"' +
+          ' allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"' +
+          ' allowfullscreen></iframe>' +
+      '</div>' +
+      (link
+        ? '<a class="media-link" href="' + link + '" target="_blank" rel="noopener">' +
+            (isTikTok ? 'Ver el video en TikTok' : 'Abrir el video en una ventana nueva') +
+          '</a>'
+        : '') +
+    '</div>';
 }
 
-function youtubeEmbed(url){
+function videoEmbed(url){
   if(!url) return '';
+  if(/\/embed\//.test(url)) return url;
   let m = url.match(/[?&]v=([\w-]+)/);
   if(m) return 'https://www.youtube.com/embed/' + m[1];
   m = url.match(/youtu\.be\/([\w-]+)/);
   if(m) return 'https://www.youtube.com/embed/' + m[1];
+  m = url.match(/tiktok\.com\/(?:@[\w.-]+\/video|v)\/(\d+)/);
+  if(m) return 'https://www.tiktok.com/embed/v2/' + m[1];
   return url;
 }
 
@@ -2461,7 +2559,41 @@ function finishGame(){
 
 /* ============ CHAT EMBEBIDO ============
    El chat es un iframe de EDCafe incrustado en #tab-chat (ver HTML).
+   - Al entrar a la pagina se abre una conversacion nueva: la URL del iframe
+     lleva un parametro unico (?s=...) que hace que EDCafe no reutilice la
+     sesion anterior guardada en el navegador.
+   - "Reiniciar chat" hace lo mismo sin recargar la pagina.
+   - Se carga la primera vez que se abre la pestana (loading="lazy").
    ========================================= */
+const chatFrame = document.getElementById('chatFrame');
+const chatReset = document.getElementById('chatReset');
+let chatStarted = false;
+
+function chatSrc(){
+  const base = chatFrame.dataset.src;
+  const stamp = Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+  return base + (base.indexOf('?') === -1 ? '?' : '&') + 's=' + stamp;
+}
+
+function startChat(){
+  if(!chatFrame || chatStarted) return;
+  chatStarted = true;
+  chatFrame.src = chatSrc();
+}
+
+function restartChat(){
+  if(!chatFrame) return;
+  chatReset.classList.add('busy');
+  chatFrame.src = 'about:blank';
+  setTimeout(()=>{
+    chatFrame.src = chatSrc();
+    chatReset.classList.remove('busy');
+  }, 120);
+}
+
+if(chatReset){
+  chatReset.addEventListener('click', ()=>{ initAudio(); sndClick(); restartChat(); });
+}
 /* ============ BOTONES GLOBALES ============ */
 document.getElementById('bigger').addEventListener('click', ()=>{
   fs = Math.min(24, fs + 1);
